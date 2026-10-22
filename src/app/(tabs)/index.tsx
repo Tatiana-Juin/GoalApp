@@ -1,5 +1,5 @@
 import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
+import { Platform, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AnimatedIcon } from '@/components/animated-icon';
@@ -8,6 +8,9 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { WebBadge } from '@/components/web-badge';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import ObjectiveCard from '@/components/ObjectiveCard';
+import { AppButton } from '@/components/AppButton';
+import { useRouter } from 'expo-router';
 
 function getDevMenuHint() {
   if (Platform.OS === 'web') {
@@ -29,33 +32,42 @@ function getDevMenuHint() {
 }
 
 export default function HomeScreen() {
+  const router = useRouter();
   return (
     <ThemedView style={styles.container}>
+      {/* garde le contenu dans la zone visible */}
       <SafeAreaView style={styles.safeArea}>
+        {/* choisi automatiquement le style en fonction de la couleur de fond  */}
         <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
+          {/* texte s'adapte a la couleur de fond */}
           <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
+            Tous les objectifs
           </ThemedText>
         </ThemedView>
-
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
-
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
+        
+        {/* POUR TOUT LES OBJECTIFS */}
+        <ScrollView
+          style={styles.objectivesScroll}
+          // regle le contenu qu'il defile dans le scrollview
+          contentContainerStyle={styles.stepContainer}
+          showsVerticalScrollIndicator
+        >
+          <ObjectiveCard 
+            onObjectivePress={(objectiveId)=>
+              router.push({
+                pathname:'/objectives/[objectiveId]',
+                params:{objectiveId}
+              })
+            }
           />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
-
-        {Platform.OS === 'web' && <WebBadge />}
+        </ScrollView>
+        <AppButton
+          title="+"
+          variant="primary"
+          accessibilityLabel="Ajouter un objectif"
+          style={styles.floatingButton}
+          onPress={() => {}}
+        />
       </SafeAreaView>
     </ThemedView>
   );
@@ -72,16 +84,31 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.four,
     alignItems: 'center',
     gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
     maxWidth: MaxContentWidth,
   },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
+  objectivesScroll: {
     flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
+    alignSelf: 'stretch',
   },
+  floatingButton: {
+    position: 'absolute',
+    right: Spacing.four,
+    bottom: Spacing.three,
+    width: 56,
+    height: 56,
+    padding: 0,
+    borderRadius: 28,
+    justifyContent: 'center',
+    zIndex: 1,
+    elevation: 6,
+  },
+ heroSection: {
+  alignSelf: 'stretch',
+  alignItems: 'center',
+  justifyContent: 'flex-start',
+  paddingTop: Spacing.three,
+  paddingHorizontal: Spacing.four,
+},
   title: {
     textAlign: 'center',
   },
@@ -90,9 +117,10 @@ const styles = StyleSheet.create({
   },
   stepContainer: {
     gap: Spacing.three,
-    alignSelf: 'stretch',
     paddingHorizontal: Spacing.three,
     paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
+    paddingBottom: BottomTabInset + Spacing.three,
+    alignItems: 'stretch',
   },
+
 });
