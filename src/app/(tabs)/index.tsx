@@ -2,14 +2,11 @@ import * as Device from 'expo-device';
 import { Platform, ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
+import { AppButton } from '@/components/AppButton';
+import ObjectiveCard from '@/components/ObjectiveCard';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
-import ObjectiveCard from '@/components/ObjectiveCard';
-import { AppButton } from '@/components/AppButton';
 import { useRouter } from 'expo-router';
 
 function getDevMenuHint() {
@@ -66,7 +63,7 @@ export default function HomeScreen() {
           variant="primary"
           accessibilityLabel="Ajouter un objectif"
           style={styles.floatingButton}
-          onPress={() => {}}
+          onPress={() => router.push('/objectives/new-objective')}
         />
       </SafeAreaView>
     </ThemedView>
