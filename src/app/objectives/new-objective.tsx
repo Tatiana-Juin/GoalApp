@@ -1,3 +1,4 @@
+import { AppButton } from '@/components/AppButton';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { useTheme } from '@/hooks/use-theme';
@@ -21,7 +22,7 @@ export default function NewObjectiveScreen() {
         <ThemedView style={styles.container}>
             <ThemedText style={styles.title}>Nouvel objectif</ThemedText>
 
-            <ThemedText style={styles.label}>Nom de l’objectif</ThemedText>
+            <ThemedText style={styles.label}>Nom de l'objectif</ThemedText>
             <TextInput
                 style={[styles.input, fieldStyle, { color: theme.text }]}
                 value={name}
@@ -71,6 +72,14 @@ export default function NewObjectiveScreen() {
                 placeholderTextColor={theme.textSecondary}
                 accessibilityLabel="Sous objectifs (étapes) falcutatives"
             />
+            <AppButton 
+                title="Créer l'objectif"
+                variant="primary"
+                accessibilityLabel="Créer l'objectif"
+                onPress={()=>{}}
+                style={styles.addButton}
+            />
+
         </ThemedView>
     );
 }
@@ -116,4 +125,8 @@ const styles = StyleSheet.create({
         fontSize: 14,
         fontWeight: '600',
     },
+     addButton: {
+     minHeight: 48,
+    justifyContent: 'center',
+  },
 });
