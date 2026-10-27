@@ -8,6 +8,7 @@ import { Pressable, StyleSheet, TextInput } from 'react-native';
 export default function NewObjectiveScreen() {
     const theme = useTheme();
     const [name, setName] = useState('');
+    const [subObjective,setSubObjective] = useState("");
     const [deadline, setDeadline] = useState<Date | null>(null);
     const [showDatePicker, setShowDatePicker] = useState(false);
 
@@ -29,7 +30,7 @@ export default function NewObjectiveScreen() {
                 placeholderTextColor={theme.textSecondary}
                 accessibilityLabel="Nom de l'objectif"
             />
-
+            {/* DATE D'ECHEANCE  */}
             <ThemedText style={styles.label}>Date d'échéance (facultative)</ThemedText>
             <Pressable
                 style={[styles.dateField, fieldStyle]}
@@ -59,6 +60,17 @@ export default function NewObjectiveScreen() {
                     onDismiss={() => setShowDatePicker(false)}
                 />
             )}
+
+            {/* POUR AJOUTER UNE ETAPE FACULTATIF  */}
+            <ThemedText style={styles.label}>Sous objectifs (étapes) facultatives</ThemedText>
+            <TextInput
+                style={[styles.input, fieldStyle, { color: theme.text }]}
+                value={subObjective}
+                onChangeText={setSubObjective}
+                placeholder="Ex : apprendre useState"
+                placeholderTextColor={theme.textSecondary}
+                accessibilityLabel="Sous objectifs (étapes) falcutatives"
+            />
         </ThemedView>
     );
 }
@@ -94,6 +106,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         gap: 12,
+        marginBottom: 24,
     },
     dateText: {
         fontSize: 16,
