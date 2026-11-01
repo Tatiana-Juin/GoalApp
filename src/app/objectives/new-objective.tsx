@@ -22,8 +22,9 @@ export default function NewObjectiveScreen() {
 
     return (
         <ThemedView style={styles.container}>
+            
             <ThemedText style={styles.title}>Nouvel objectif</ThemedText>
-
+            {/* NOM DE L'OBJECTIF */}
             <ThemedText style={styles.label}>Nom de l'objectif</ThemedText>
             <TextInput
                 style={[styles.input, fieldStyle, { color: theme.text }]}
@@ -65,7 +66,7 @@ export default function NewObjectiveScreen() {
             )}
 
             <ThemedText style={styles.label}>Catégorie</ThemedText>
-            <View style={styles.categoryList}>
+            {/* <View style={styles.categoryList}>
                 {initialCategories.map((category) => {
                     const isSelected = selectedCategoryId === category.id;
 
@@ -93,7 +94,7 @@ export default function NewObjectiveScreen() {
                         </Pressable>
                     );
                 })}
-            </View>
+            </View> */}
 
             {/* POUR AJOUTER UNE ETAPE FACULTATIF  */}
             <ThemedText style={styles.label}>Sous objectifs (étapes) facultatives</ThemedText>

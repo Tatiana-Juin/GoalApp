@@ -21,11 +21,11 @@ export default function ObjectiveCard({ onObjectivePress }: ObjectiveCardProps) 
           <ThemedView style={styles.card}>
            
             {/* CATEGORIE */}
-            <ThemedText style={styles.themeText}>
+            {/* <ThemedText style={styles.themeText}>
               {initialCategories.find(
                 (category) => category.id === objective.categoryId
               )?.name ?? 'Catégorie inconnue'}
-            </ThemedText>
+            </ThemedText> */}
 
               {/* NOM DE L'OBJECTIF */}
             <ThemedText style={[styles.themeText, styles.title]}>
