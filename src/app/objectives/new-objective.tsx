@@ -11,7 +11,7 @@ export default function NewObjectiveScreen() {
     const theme = useTheme();
     const [name, setName] = useState('');
     const [subObjective,setSubObjective] = useState("");
-    const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
+    // const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
     const [deadline, setDeadline] = useState<Date | null>(null);
     const [showDatePicker, setShowDatePicker] = useState(false);
 
@@ -65,7 +65,7 @@ export default function NewObjectiveScreen() {
                 />
             )}
 
-            <ThemedText style={styles.label}>Catégorie</ThemedText>
+            {/* <ThemedText style={styles.label}>Catégorie</ThemedText> */}
             {/* <View style={styles.categoryList}>
                 {initialCategories.map((category) => {
                     const isSelected = selectedCategoryId === category.id;
