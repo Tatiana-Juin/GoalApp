@@ -1,7 +1,7 @@
 import { AppButton } from '@/components/AppButton';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { initialCategories } from '@/data/initialData';
+// import { initialCategories } from '@/data/initialData';
 import { useTheme } from '@/hooks/use-theme';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useState } from 'react';
