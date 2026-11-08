@@ -10,11 +10,36 @@ import { Pressable, StyleSheet, TextInput } from 'react-native';
 const CLE_OBJECTIVE : string = "objective";
 export default function NewObjectiveScreen() {
     const theme = useTheme();
-    const [name, setName] = useState('');
-    const [subObjective,setSubObjective] = useState("");
+    const [name, setName] = useState<string>('');
+    const [subObjective,setSubObjective] = useState<string>("");
     // POUR LA DATE 
     const [deadline, setDeadline] = useState<Date | null>(null);
     const [showDatePicker, setShowDatePicker] = useState(false);
+    const [dateError,setDateError] = useState<string>("");
+    // tableau pour ajouter un objectifs
+    const [objective,setObjective] = useState<string[]>([]);
+
+    // CREATION DE L'OBJET
+    // const objectObjective : Objective={
+    //     id:creerIdUnique(objective)
+    // }
+   
+    // POUR LA VERIFICATION DE L'AJOUT D'UN OBJECTIF
+    async function ajouterObjectif(){
+        const nameObjective = name.trim();
+        // si c'est vide ca retourne 
+        if(!nameObjective) return;
+
+        if(!deadline){
+            setDateError("choisi une date d'echeance");
+            return;
+        }
+
+        // const newObjective = [...objective,nameObjective,deadline]
+        setDateError("");
+    }
+    
+
     // POUR LE STYLE 
     const fieldStyle = {
         backgroundColor: theme.backgroundElement,

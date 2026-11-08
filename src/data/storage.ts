@@ -6,7 +6,6 @@ const OBJECTIVES_KEY = '@goalapp/objectives';
 
 export function creerIdUnique(objectifs: Objective[]): string {
 	let id: string;
-
 	do {
 		id = `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
 	} while (objectifs.some((objectif) => objectif.id === id));

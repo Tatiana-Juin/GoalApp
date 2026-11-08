@@ -2,19 +2,15 @@
 export interface Objective{
     id: string;
     name:string;
-    description?:string;
     dueDate: Date;
     completed:boolean;
-    
-    subObjectives: SubObjective[];
+    subObjectives?: SubObjective[];
 }
 
 // Interface pour les sous-objectifs
 export interface SubObjective{
     id: string;
     name:string;
-    date?: Date;
     completed:boolean;
-    // objective:Objective[];
-    
+    // objective:Objective[];  
 }
