@@ -14,10 +14,12 @@ import { useTheme } from '@/hooks/use-theme';
 
 export default function ObjectiveDetailScreen() {
   const { objectiveId } = useLocalSearchParams<{ objectiveId: string }>();
+  // pour trouver un objectif par rappoort a id
   const objective = initialObjectives.find((item) => item.id === objectiveId);
   const [subObjectives, setSubObjectives] = useState(
     () => objective?.subObjectives ?? []
   );
+  // SOUS OBJECTIFS
   const [newSubObjectiveName, setNewSubObjectiveName] = useState('');
   const [editingSubObjectiveId, setEditingSubObjectiveId] = useState<string | null>(null);
   const [editedSubObjectiveName, setEditedSubObjectiveName] = useState('');

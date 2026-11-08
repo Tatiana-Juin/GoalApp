@@ -1,12 +1,4 @@
-import  type { Objective,SubObjective } from '../types/goal';
-
-// Initialisation des categories d'objectifs
-// export const initialCategories: Category[] = [
-//     { id: '1', name: 'sans catégorie' },
-//     {id: '2', name: 'personnel'},
-//     {id: '3', name: 'programmation'},
-//     {id: '4', name: 'tiktok'},
-// ];
+import type { Objective } from '../types/goal';
 
 // Initialisation des objectifs
 export const initialObjectives: Objective[] = [

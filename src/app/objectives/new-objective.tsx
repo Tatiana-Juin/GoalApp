@@ -1,20 +1,21 @@
 import { AppButton } from '@/components/AppButton';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-// import { initialCategories } from '@/data/initialData';
 import { useTheme } from '@/hooks/use-theme';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useState } from 'react';
-import { Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { Pressable, StyleSheet, TextInput } from 'react-native';
 
+
+const CLE_OBJECTIVE : string = "objective";
 export default function NewObjectiveScreen() {
     const theme = useTheme();
     const [name, setName] = useState('');
     const [subObjective,setSubObjective] = useState("");
-    // const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(null);
+    // POUR LA DATE 
     const [deadline, setDeadline] = useState<Date | null>(null);
     const [showDatePicker, setShowDatePicker] = useState(false);
-
+    // POUR LE STYLE 
     const fieldStyle = {
         backgroundColor: theme.backgroundElement,
         borderColor: theme.textSecondary,
@@ -22,7 +23,7 @@ export default function NewObjectiveScreen() {
 
     return (
         <ThemedView style={styles.container}>
-            
+            {/* nom de la page  */}
             <ThemedText style={styles.title}>Nouvel objectif</ThemedText>
             {/* NOM DE L'OBJECTIF */}
             <ThemedText style={styles.label}>Nom de l'objectif</ThemedText>
@@ -65,36 +66,7 @@ export default function NewObjectiveScreen() {
                 />
             )}
 
-            {/* <ThemedText style={styles.label}>Catégorie</ThemedText> */}
-            {/* <View style={styles.categoryList}>
-                {initialCategories.map((category) => {
-                    const isSelected = selectedCategoryId === category.id;
-
-                    return (
-                        <Pressable
-                            key={category.id}
-                            onPress={() => setSelectedCategoryId(category.id)}
-                            style={[
-                                styles.categoryButton,
-                                {
-                                    backgroundColor: isSelected
-                                        ? theme.backgroundSelected
-                                        : theme.backgroundElement,
-                                    borderColor: isSelected
-                                        ? '#75609C'
-                                        : theme.textSecondary,
-                                },
-                            ]}
-                            accessibilityRole="button"
-                            accessibilityState={{ selected: isSelected }}
-                        >
-                            <ThemedText style={styles.categoryText}>
-                                {isSelected ? `✓ ${category.name}` : category.name}
-                            </ThemedText>
-                        </Pressable>
-                    );
-                })}
-            </View> */}
+            
 
             {/* POUR AJOUTER UNE ETAPE FACULTATIF  */}
             <ThemedText style={styles.label}>Sous objectifs (étapes) facultatives</ThemedText>

@@ -1,9 +1,3 @@
-// Interface pour les catégories d'objectifs
-// export interface Category{
-//     id: string;
-//     name:string;
-// }
-
 // Interface pour les objectifs 
 export interface Objective{
     id: string;
@@ -11,7 +5,7 @@ export interface Objective{
     description?:string;
     dueDate: Date;
     completed:boolean;
-    // categoryId:string;
+    
     subObjectives: SubObjective[];
 }
 

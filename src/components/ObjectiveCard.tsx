@@ -1,9 +1,9 @@
-import { initialCategories, initialObjectives } from '../data/initialData';
-import { Pressable, StyleSheet } from 'react-native';
+import { ProgressBar } from '@/components/ProgressBar';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { getProgress } from '@/utils/progress';
-import { ProgressBar } from '@/components/ProgressBar';
+import { Pressable, StyleSheet } from 'react-native';
+import { initialObjectives } from '../data/initialData';
 
 type ObjectiveCardProps = {
   onObjectivePress?: (objectiveId: string) => void;
