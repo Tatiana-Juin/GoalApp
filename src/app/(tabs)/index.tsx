@@ -7,6 +7,7 @@ import ObjectiveCard from '@/components/ObjectiveCard';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { useObjectives } from '@/hooks/use-objectives';
 import { useRouter } from 'expo-router';
 
 function getDevMenuHint() {
@@ -30,6 +31,7 @@ function getDevMenuHint() {
 
 export default function HomeScreen() {
   const router = useRouter();
+  const { objectives, loading } = useObjectives();
   return (
     <ThemedView style={styles.container}>
       {/* garde le contenu dans la zone visible */}
@@ -49,14 +51,23 @@ export default function HomeScreen() {
           contentContainerStyle={styles.stepContainer}
           showsVerticalScrollIndicator
         >
-          <ObjectiveCard 
-            onObjectivePress={(objectiveId)=>
-              router.push({
-                pathname:'/objectives/[objectiveId]',
-                params:{objectiveId}
-              })
-            }
-          />
+          {loading ? (
+            <ThemedText>Chargement des objectifs...</ThemedText>
+          ) : objectives.length === 0 ? (
+            <ThemedText themeColor="textSecondary">
+              Aucun objectif pour le moment.
+            </ThemedText>
+          ) : (
+            <ObjectiveCard
+              objectives={objectives}
+              onObjectivePress={(objectiveId) =>
+                router.push({
+                  pathname: '/objectives/[objectiveId]',
+                  params: { objectiveId },
+                })
+              }
+            />
+          )}
         </ScrollView>
         <AppButton
           title="+"

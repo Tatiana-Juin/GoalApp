@@ -9,13 +9,13 @@ import { ProgressBar } from '@/components/ProgressBar';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
-import { initialObjectives } from '@/data/initialData';
+import { useObjectives } from '@/hooks/use-objectives';
 import { useTheme } from '@/hooks/use-theme';
 
 export default function ObjectiveDetailScreen() {
   const { objectiveId } = useLocalSearchParams<{ objectiveId: string }>();
-  // pour trouver un objectif par rappoort a id
-  const objective = initialObjectives.find((item) => item.id === objectiveId);
+  const { objectives, loading } = useObjectives();
+  const objective = objectives.find((item) => item.id === objectiveId);
   const [subObjectives, setSubObjectives] = useState(
     () => objective?.subObjectives ?? []
   );
@@ -25,6 +25,14 @@ export default function ObjectiveDetailScreen() {
   const [editedSubObjectiveName, setEditedSubObjectiveName] = useState('');
   const [deletingSubObjectiveId, setDeletingSubObjectiveId] = useState<string | null>(null);
   const theme = useTheme();
+
+  if (loading) {
+    return (
+      <ThemedView style={styles.notFound}>
+        <ThemedText>Chargement de l’objectif...</ThemedText>
+      </ThemedView>
+    );
+  }
 
   if (!objective) {
     return (

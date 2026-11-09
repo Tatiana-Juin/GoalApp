@@ -1,18 +1,19 @@
 import { ProgressBar } from '@/components/ProgressBar';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import type { Objective } from '@/types/goal';
 import { getProgress } from '@/utils/progress';
 import { Pressable, StyleSheet } from 'react-native';
-import { initialObjectives } from '../data/initialData';
 
 type ObjectiveCardProps = {
+  objectives: Objective[];
   onObjectivePress?: (objectiveId: string) => void;
 };
 
-export default function ObjectiveCard({ onObjectivePress }: ObjectiveCardProps) {
+export default function ObjectiveCard({ objectives, onObjectivePress }: ObjectiveCardProps) {
   return (
     <>
-      {initialObjectives.map((objective) => (
+      {objectives.map((objective) => (
         <Pressable
           key={objective.id}
           onPress={() => onObjectivePress?.(objective.id)}
@@ -36,7 +37,7 @@ export default function ObjectiveCard({ onObjectivePress }: ObjectiveCardProps) 
             <ThemedText style={styles.themeText}>
               {objective.dueDate.toLocaleDateString('fr-FR')}
             </ThemedText>
-            <ProgressBar progress={getProgress(objective.subObjectives)} />
+            <ProgressBar progress={getProgress(objective.subObjectives ?? [])} />
           </ThemedView>
           
         </Pressable>

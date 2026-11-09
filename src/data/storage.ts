@@ -13,13 +13,29 @@ export function creerIdUnique(objectifs: Objective[]): string {
 	return id;
 }
 
-export async function sauvegarder(objectifs: Objective[]) : Promise<boolean> {
+export async function chargerObjectifs(): Promise<Objective[]> {
 	try {
-        const donnees = JSON.stringify(objectifs);
-        	await AsyncStorage.setItem(OBJECTIVES_KEY, donnees);
-            return true;
-    } catch (error) {
-        console.log(`erreur ${objectifs}`,error);
-        return false;
-    }
+		const donnees = await AsyncStorage.getItem(OBJECTIVES_KEY);
+		if (!donnees) return [];
+
+		const objectifs: Objective[] = JSON.parse(donnees);
+		return objectifs.map((objectif) => ({
+			...objectif,
+			dueDate: new Date(objectif.dueDate),
+		}));
+	} catch (error) {
+		console.error('Impossible de charger les objectifs', error);
+		return [];
+	}
+}
+
+export async function sauvegarder(objectifs: Objective[]): Promise<boolean> {
+	try {
+ 		const donnees = JSON.stringify(objectifs);
+		await AsyncStorage.setItem(OBJECTIVES_KEY, donnees);
+		return true;
+	} catch (error) {
+		console.error('Impossible de sauvegarder les objectifs', error);
+		return false;
+	}
 }

@@ -1,42 +1,63 @@
 import { AppButton } from '@/components/AppButton';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { useObjectives } from '@/hooks/use-objectives';
 import { useTheme } from '@/hooks/use-theme';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, StyleSheet, TextInput } from 'react-native';
 
-
-const CLE_OBJECTIVE : string = "objective";
 export default function NewObjectiveScreen() {
     const theme = useTheme();
+    const router = useRouter();
+    const { ajouterObjectif, loading } = useObjectives();
     const [name, setName] = useState<string>('');
-    const [subObjective,setSubObjective] = useState<string>("");
-    // POUR LA DATE 
     const [deadline, setDeadline] = useState<Date | null>(null);
     const [showDatePicker, setShowDatePicker] = useState(false);
-    const [dateError,setDateError] = useState<string>("");
-    // tableau pour ajouter un objectifs
-    const [objective,setObjective] = useState<string[]>([]);
+    const [nameError, setNameError] = useState('');
+    const [dateError, setDateError] = useState('');
+    const [saveError, setSaveError] = useState('');
+    const [saving, setSaving] = useState(false);
 
-    // CREATION DE L'OBJET
-    // const objectObjective : Objective={
-    //     id:creerIdUnique(objective)
-    // }
-   
-    // POUR LA VERIFICATION DE L'AJOUT D'UN OBJECTIF
-    async function ajouterObjectif(){
+    async function handleCreateObjective() {
         const nameObjective = name.trim();
-        // si c'est vide ca retourne 
-        if(!nameObjective) return;
+        setNameError('');
+        setDateError('');
+        setSaveError('');
 
-        if(!deadline){
-            setDateError("choisi une date d'echeance");
+        if (!nameObjective) {
+            setNameError('Saisis le nom de ton objectif.');
             return;
         }
 
-        // const newObjective = [...objective,nameObjective,deadline]
-        setDateError("");
+        if (!deadline) {
+            setDateError('Choisis une date d’échéance.');
+            return;
+        }
+
+        if (loading || saving) return;
+
+        setSaving(true);
+        try {
+            const saved = await ajouterObjectif({
+                name: nameObjective,
+                dueDate: deadline,
+                subObjectives: [],
+            });
+
+            if (!saved) {
+                setSaveError('La sauvegarde a échoué. Réessaie.');
+                return;
+            }
+
+            router.back();
+        } catch (error) {
+            console.error('Erreur lors de la création de l’objectif', error);
+            setSaveError('Une erreur est survenue. Réessaie.');
+        } finally {
+            setSaving(false);
+        }
     }
     
 
@@ -55,11 +76,17 @@ export default function NewObjectiveScreen() {
             <TextInput
                 style={[styles.input, fieldStyle, { color: theme.text }]}
                 value={name}
-                onChangeText={setName}
                 placeholder="Ex. : apprendre React"
                 placeholderTextColor={theme.textSecondary}
                 accessibilityLabel="Nom de l'objectif"
+                onChangeText={(value) => {
+                    setName(value);
+                    if (value.trim()) setNameError('');
+                }}
             />
+            {nameError !== '' && (
+                <ThemedText style={styles.errorText}>{nameError}</ThemedText>
+            )}
             {/* DATE D'ECHEANCE  */}
             <ThemedText style={styles.label}>Date d'échéance </ThemedText>
             <Pressable
@@ -84,32 +111,29 @@ export default function NewObjectiveScreen() {
                     value={deadline ?? new Date()}
                     mode="date"
                     onValueChange={(_event, selectedDate) => {
-                        if (selectedDate) setDeadline(selectedDate);
+                        if (selectedDate) {
+                            setDeadline(selectedDate);
+                            setDateError('');
+                        }
                         setShowDatePicker(false);
                     }}
                     onDismiss={() => setShowDatePicker(false)}
                 />
             )}
+            {dateError !== '' && (
+                <ThemedText style={styles.errorText}>{dateError}</ThemedText>
+            )}
 
-            
-
-            {/* POUR AJOUTER UNE ETAPE FACULTATIF  */}
-            <ThemedText style={styles.label}>Sous objectifs (étapes) facultatives</ThemedText>
-            <TextInput
-                style={[styles.input, fieldStyle, { color: theme.text }]}
-                value={subObjective}
-                onChangeText={setSubObjective}
-                placeholder="Ex : apprendre useState"
-                placeholderTextColor={theme.textSecondary}
-                accessibilityLabel="Sous objectifs (étapes) falcutatives"
-            />
             <AppButton 
-                title="Créer l'objectif"
+                title={saving ? 'Enregistrement...' : 'Créer l’objectif'}
                 variant="primary"
                 accessibilityLabel="Créer l'objectif"
-                onPress={()=>{}}
+                onPress={() => void handleCreateObjective()}
                 style={styles.addButton}
             />
+            {saveError !== '' && (
+                <ThemedText style={styles.errorText}>{saveError}</ThemedText>
+            )}
 
         </ThemedView>
     );
@@ -155,6 +179,10 @@ const styles = StyleSheet.create({
     dateAction: {
         fontSize: 14,
         fontWeight: '600',
+    },
+    errorText: {
+        color: '#DC2626',
+        marginBottom: 16,
     },
     categoryList: {
         flexDirection: 'row',
