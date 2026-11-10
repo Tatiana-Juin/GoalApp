@@ -50,7 +50,7 @@ export default function NewObjectiveScreen() {
                 setSaveError('La sauvegarde a échoué. Réessaie.');
                 return;
             }
-
+            // reviens a l'ecran précédent si ca reussi 
             router.back();
         } catch (error) {
             console.error('Erreur lors de la création de l’objectif', error);
@@ -84,6 +84,7 @@ export default function NewObjectiveScreen() {
                     if (value.trim()) setNameError('');
                 }}
             />
+            {/* s'il existe une erreur  */}
             {nameError !== '' && (
                 <ThemedText style={styles.errorText}>{nameError}</ThemedText>
             )}

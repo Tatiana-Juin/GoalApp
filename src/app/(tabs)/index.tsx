@@ -30,7 +30,9 @@ function getDevMenuHint() {
 }
 
 export default function HomeScreen() {
+  // ROUTEUR 
   const router = useRouter();
+  // lit les objectifs 
   const { objectives, loading } = useObjectives();
   return (
     <ThemedView style={styles.container}>
@@ -52,6 +54,7 @@ export default function HomeScreen() {
           showsVerticalScrollIndicator
         >
           {loading ? (
+            // au moment du chargement 
             <ThemedText>Chargement des objectifs...</ThemedText>
           ) : objectives.length === 0 ? (
             <ThemedText themeColor="textSecondary">

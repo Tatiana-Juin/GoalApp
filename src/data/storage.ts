@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { Objective } from '@/types/goal';
 
 const OBJECTIVES_KEY = '@goalapp/objectives';
-
+// FONCTION POUR CREER UN ID UNIQUE 
 export function creerIdUnique(objectifs: Objective[]): string {
 	let id: string;
 	do {
@@ -12,7 +12,7 @@ export function creerIdUnique(objectifs: Objective[]): string {
 
 	return id;
 }
-
+// FONCTION POUR CHARGER LES DONNER 
 export async function chargerObjectifs(): Promise<Objective[]> {
 	try {
 		const donnees = await AsyncStorage.getItem(OBJECTIVES_KEY);
@@ -28,7 +28,7 @@ export async function chargerObjectifs(): Promise<Objective[]> {
 		return [];
 	}
 }
-
+// FONCTION POUR AJOUTER DES DONNES 
 export async function sauvegarder(objectifs: Objective[]): Promise<boolean> {
 	try {
  		const donnees = JSON.stringify(objectifs);

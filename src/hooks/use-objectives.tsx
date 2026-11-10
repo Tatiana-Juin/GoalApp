@@ -1,15 +1,15 @@
 import {
-    createContext,
-    useContext,
-    useEffect,
-    useState,
-    type PropsWithChildren,
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type PropsWithChildren,
 } from 'react';
 
 import {
-    chargerObjectifs,
-    creerIdUnique,
-    sauvegarder,
+  chargerObjectifs,
+  creerIdUnique,
+  sauvegarder,
 } from '@/data/storage';
 import type { Objective } from '@/types/goal';
 
@@ -42,10 +42,11 @@ export function ObjectivesProvider({ children }: PropsWithChildren) {
       active = false;
     };
   }, []);
+  
 //   AJOUT d'UN OBJECTIVE  
   async function ajouterObjectif(input: NewObjective): Promise<boolean> {
     if (loading) return false;
-
+    // CREATION D UN OBJET BASER SUR UNE ONTERFACE
     const newObjective: Objective = {
       ...input,
       id: creerIdUnique(objectives),
@@ -61,6 +62,7 @@ export function ObjectivesProvider({ children }: PropsWithChildren) {
   }
 
   return (
+    // Dit ce qu'il fournis au composant
     <ObjectivesContext.Provider
       value={{ objectives, loading, ajouterObjectif }}
     >
@@ -68,7 +70,7 @@ export function ObjectivesProvider({ children }: PropsWithChildren) {
     </ObjectivesContext.Provider>
   );
 }
-
+// PERMET AUX AUTRES ECRANS D'ACCEDER A CETTE LISTE 
 export function useObjectives(): ObjectivesContextValue {
   const context = useContext(ObjectivesContext);
 
