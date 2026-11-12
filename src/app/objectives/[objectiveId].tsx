@@ -1,5 +1,5 @@
 import { useLocalSearchParams } from 'expo-router';
-import { ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { ScrollView, StyleSheet, TextInput, View,Alert,Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AppButton } from '@/components/AppButton';
@@ -9,9 +9,10 @@ import { Spacing } from '@/constants/theme';
 import { useObjectives } from '@/hooks/use-objectives';
 import { useTheme } from '@/hooks/use-theme';
 
+
 export default function ObjectiveDetailScreen() {
   const { objectiveId } = useLocalSearchParams<{ objectiveId: string }>();
-  const { objectives, loading } = useObjectives();
+  const { objectives, loading,deleteObjective } = useObjectives();
   const objective = objectives.find((item) => item.id === objectiveId);
   const theme = useTheme();
 
@@ -29,6 +30,30 @@ export default function ObjectiveDetailScreen() {
         <ThemedText>Objectif introuvable</ThemedText>
       </ThemedView>
     );
+  }
+
+  function confirmationDelete(index:string){
+    const message = "Voulez vous vraiment supprimer cette objective ?";
+
+    // SI C EST SUR PC 
+     if (Platform.OS === 'web') {
+      if (globalThis.confirm(message)) {
+        // recupere pas le resultat
+        void deleteObjective(index);
+      }
+      return;
+    }
+     Alert.alert('Supprimer la note ?', message, [
+      { text: 'Annuler', style: 'cancel' },
+      {
+        text: 'Supprimer',
+        style: 'destructive',
+        // void => on veux pas que ca retourne quelque chose 
+        onPress: () => {
+          deleteObjective(index)
+        },
+      },
+    ]);
   }
   return (
     <ThemedView style={styles.screen}>
@@ -72,16 +97,18 @@ export default function ObjectiveDetailScreen() {
           </ThemedView>
 
           <ThemedView style={styles.objectiveActions}>
+            {/* MODIFIER OBJETIVE */}
             <AppButton
               title="Modifier l'objectif"
               variant="secondary"
               onPress={() => {}}
               style={styles.actionButton}
             />
+            {/* SUPPRIMER OBJECTIVE */}
             <AppButton
               title="Supprimer l'objectif"
               variant="danger"
-              onPress={() => {}}
+              onPress={() => confirmationDelete(objective.id)}
               style={styles.actionButton}
             />
           </ThemedView>
