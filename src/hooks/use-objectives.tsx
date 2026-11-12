@@ -61,6 +61,24 @@ export function ObjectivesProvider({ children }: PropsWithChildren) {
     return true;
   }
 
+  async function deleteObjective(objectiveId: string): Promise<boolean> {
+    const updatedObjectives = objectives.filter(
+      (objective) => objective.id !== objectiveId
+    );
+
+    if (updatedObjectives.length === objectives.length) {
+      return false;
+    }
+
+    const saved = await sauvegarder(updatedObjectives);
+    if (!saved) {
+      return false;
+    }
+
+    setObjectives(updatedObjectives);
+    return true;
+  }
+
   return (
     // Dit ce qu'il fournis au composant
     <ObjectivesContext.Provider

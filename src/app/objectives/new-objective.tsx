@@ -32,7 +32,7 @@ export default function NewObjectiveScreen() {
         }
 
         if (!deadline) {
-            setDateError('Choisis une date d’échéance.');
+            setDateError("Choisis une date d'échéance.");
             return;
         }
 
@@ -60,7 +60,6 @@ export default function NewObjectiveScreen() {
         }
     }
     
-
     // POUR LE STYLE 
     const fieldStyle = {
         backgroundColor: theme.backgroundElement,
