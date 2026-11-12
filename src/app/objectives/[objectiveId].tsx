@@ -1,4 +1,4 @@
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams,useRouter } from 'expo-router';
 import { ScrollView, StyleSheet, TextInput, View,Alert,Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -10,11 +10,13 @@ import { useObjectives } from '@/hooks/use-objectives';
 import { useTheme } from '@/hooks/use-theme';
 
 
+
 export default function ObjectiveDetailScreen() {
   const { objectiveId } = useLocalSearchParams<{ objectiveId: string }>();
   const { objectives, loading,deleteObjective } = useObjectives();
   const objective = objectives.find((item) => item.id === objectiveId);
   const theme = useTheme();
+   const router = useRouter();
 
   if (loading) {
     return (
@@ -32,6 +34,12 @@ export default function ObjectiveDetailScreen() {
     );
   }
 
+async function supprimerEtRetourner(objectiveId: string) {
+  const deleted = await deleteObjective(objectiveId);
+  if (deleted) {
+    router.back();
+  }
+}
   function confirmationDelete(index:string){
     const message = "Voulez vous vraiment supprimer cette objective ?";
 
@@ -39,7 +47,7 @@ export default function ObjectiveDetailScreen() {
      if (Platform.OS === 'web') {
       if (globalThis.confirm(message)) {
         // recupere pas le resultat
-        void deleteObjective(index);
+        void supprimerEtRetourner(objectiveId);
       }
       return;
     }
@@ -49,12 +57,14 @@ export default function ObjectiveDetailScreen() {
         text: 'Supprimer',
         style: 'destructive',
         // void => on veux pas que ca retourne quelque chose 
-        onPress: () => {
-          deleteObjective(index)
-        },
+        onPress: () => 
+          void supprimerEtRetourner(objectiveId)
+        ,
       },
+      
     ]);
   }
+
   return (
     <ThemedView style={styles.screen}>
       <SafeAreaView style={styles.safeArea} edges={['bottom']}>
