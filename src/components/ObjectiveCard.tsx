@@ -20,13 +20,6 @@ export default function ObjectiveCard({ objectives, onObjectivePress }: Objectiv
           accessibilityRole="button"
         >
           <ThemedView style={styles.card}>
-           
-            {/* CATEGORIE */}
-            {/* <ThemedText style={styles.themeText}>
-              {initialCategories.find(
-                (category) => category.id === objective.categoryId
-              )?.name ?? 'Catégorie inconnue'}
-            </ThemedText> */}
 
               {/* NOM DE L'OBJECTIF */}
             <ThemedText style={[styles.themeText, styles.title]}>
