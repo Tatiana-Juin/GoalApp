@@ -1,11 +1,14 @@
-import { ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { ScrollView, StyleSheet, TextInput, View,Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
+import { useLocalSearchParams,useRouter } from 'expo-router';
+import { useObjectives } from '@/hooks/use-objectives';
 import { AppButton } from '@/components/AppButton';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
+import { useState } from 'react';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 export default function EditObjectiveScreen() {
   const theme = useTheme();
@@ -13,6 +16,33 @@ export default function EditObjectiveScreen() {
     backgroundColor: theme.backgroundElement,
     borderColor: theme.textSecondary,
   };
+    const { objectiveId } = useLocalSearchParams<{ objectiveId: string }>();
+    const { objectives, loading } = useObjectives();
+    const objective = objectives.find((item) => item.id === objectiveId);
+
+    // POUR LA DATE 
+    // pour savoir si c'est ouvert
+    const [showDatePicker, setShowDatePicker] = useState(false);
+    // pour recuperer la date 
+     const [deadline, setDeadline] = useState<Date | null>(null);
+      const [dateError, setDateError] = useState('');
+
+    // verifie que ca charge si c'est le cas on dit que ca charge 
+     if (loading) {
+        return (
+          <ThemedView style={styles.notFound}>
+            <ThemedText>Chargement de l’objectif...</ThemedText>
+          </ThemedView>
+        );
+      }
+      // sinon objective introuvable
+      if (!objective) {
+        return (
+          <ThemedView style={styles.notFound}>
+            <ThemedText>Objectif introuvable</ThemedText>
+          </ThemedView>
+        );
+      }
 
   return (
     <ThemedView style={styles.screen}>
@@ -26,17 +56,22 @@ export default function EditObjectiveScreen() {
           <ThemedText style={[styles.subtitle, { color: theme.textSecondary }]}>
             Mets à jour les informations de ton objectif.
           </ThemedText>
-
+          
+          {/* Nom  */}
           <ThemedText style={styles.label}>Nom de l’objectif</ThemedText>
           <TextInput
             style={[styles.input, fieldStyle, { color: theme.text }]}
-            placeholder="Ex. : apprendre React"
+            placeholder={objective.name}
             placeholderTextColor={theme.textSecondary}
             accessibilityLabel="Nom de l’objectif"
+            defaultValue={objective.name}
           />
 
           <ThemedText style={styles.label}>Date d’échéance</ThemedText>
-          <View
+          <Pressable onPress={() => setShowDatePicker(true)}
+                accessibilityRole="button"
+                accessibilityLabel="Choisir la date d'échéance">
+            <View
             style={[
               styles.dateField,
               fieldStyle,
@@ -44,10 +79,26 @@ export default function EditObjectiveScreen() {
             accessibilityLabel="Date d’échéance"
           >
             <ThemedText style={{ color: theme.textSecondary }}>
-              Choisir une date
+              {(deadline ??objective.dueDate).toLocaleDateString('fr-FR')}
             </ThemedText>
             <ThemedText style={styles.dateAction}>Calendrier</ThemedText>
           </View>
+          </Pressable>
+           {showDatePicker && (
+                <DateTimePicker
+                    value={(deadline ?? objective.dueDate)}
+                    mode="date"
+                    onValueChange={(_event, selectedDate) => {
+                        if (selectedDate) {
+                            setDeadline(selectedDate);
+                            setDateError('');
+                        }
+                        setShowDatePicker(false);
+                    }}
+                    onDismiss={() => setShowDatePicker(false)}
+                />
+            )}
+          
 
           <View style={styles.actions}>
             <AppButton
@@ -124,5 +175,11 @@ const styles = StyleSheet.create({
   actionButton: {
     minHeight: 48,
     justifyContent: 'center',
+  },
+   notFound: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: Spacing.four,
   },
 });
