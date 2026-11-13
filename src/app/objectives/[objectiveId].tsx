@@ -111,7 +111,12 @@ async function supprimerEtRetourner(objectiveId: string) {
             <AppButton
               title="Modifier l'objectif"
               variant="secondary"
-              onPress={() => {}}
+              onPress={() => 
+                router.push({
+                  pathname:'/objectives/edit-objective',
+                  params:{objectiveId:objective.id}
+                })
+              }
               style={styles.actionButton}
             />
             {/* SUPPRIMER OBJECTIVE */}
