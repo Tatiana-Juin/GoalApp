@@ -84,6 +84,7 @@ export default function EditObjectiveScreen() {
             <ThemedText style={styles.dateAction}>Calendrier</ThemedText>
           </View>
           </Pressable>
+          {/* c'est pour pouvoir cliquer sur le calendrier */}
            {showDatePicker && (
                 <DateTimePicker
                     value={(deadline ?? objective.dueDate)}

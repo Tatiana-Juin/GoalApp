@@ -20,6 +20,7 @@ type ObjectivesContextValue = {
   loading: boolean;
   ajouterObjectif: (objective: NewObjective) => Promise<boolean>;
   deleteObjective: (objectiveId: string) => Promise<boolean>;
+  updatedObjective: (objectiveId: string, name: string, dueDate: Date) => Promise<boolean>;
 };
 
 const ObjectivesContext = createContext<ObjectivesContextValue | null>(null);
@@ -79,11 +80,29 @@ export function ObjectivesProvider({ children }: PropsWithChildren) {
     setObjectives(updatedObjectives);
     return true;
   }
+  // POUR MODIFIER UN OBJECTIF
+  async function updatedObjective(objectiveId: string, name: string, dueDate: Date): Promise<boolean> {
+    const objectiveExists = objectives.some(
+      (objective) => objective.id === objectiveId
+    );
+    if (!objectiveExists) return false;
+
+    const updatedObjectives = objectives.map((objective) =>
+      objective.id === objectiveId
+        ? { ...objective, name, dueDate }
+        : objective
+    );
+
+    const saved = await sauvegarder(updatedObjectives);
+    if (!saved) return false;
+    setObjectives(updatedObjectives);
+    return true;
+  }
 
   return (
     // Dit ce qu'il fournis au composant
     <ObjectivesContext.Provider
-      value={{ objectives, loading, ajouterObjectif,deleteObjective }}
+      value={{ objectives, loading, ajouterObjectif, deleteObjective, updatedObjective }}
     >
       {children}
     </ObjectivesContext.Provider>
