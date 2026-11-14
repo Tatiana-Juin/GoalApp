@@ -7,17 +7,20 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
+
 export default function EditObjectiveScreen() {
+
   const theme = useTheme();
+  const router = useRouter();
   const fieldStyle = {
     backgroundColor: theme.backgroundElement,
     borderColor: theme.textSecondary,
   };
     const { objectiveId } = useLocalSearchParams<{ objectiveId: string }>();
-    const { objectives, loading } = useObjectives();
+    const { objectives, loading,updatedObjective } = useObjectives();
     const objective = objectives.find((item) => item.id === objectiveId);
 
     // POUR LA DATE 
@@ -26,6 +29,18 @@ export default function EditObjectiveScreen() {
     // pour recuperer la date 
      const [deadline, setDeadline] = useState<Date | null>(null);
       const [dateError, setDateError] = useState('');
+      const [name,setName] =  useState("");
+      const [nameError,setNameError]= useState("");
+       const [saving, setSaving] = useState(false);
+       const [saveError, setSaveError] = useState('');
+     
+
+      // Au chargement pour recuperer le nom et le placer dans le useState
+      useEffect(()=>{
+        if(objective){
+          setName(objective.name)
+        }
+      },[objective])
 
     // verifie que ca charge si c'est le cas on dit que ca charge 
      if (loading) {
@@ -44,6 +59,42 @@ export default function EditObjectiveScreen() {
         );
       }
 
+      async function handleUpdatedObjective(){
+        // erreur si l'objectifs existe pas 
+        if (!objective) return;
+        const nameObjective = name.trim();
+        setNameError("");
+        setDateError("");
+        setSaveError("");
+
+        if(!nameObjective){
+          setNameError("Il faut que tu choisi le nom pour la modification");
+          return;
+        }
+
+        if(loading || saving) return;
+
+        setSaving(true)
+        try{
+          const saved = await updatedObjective(
+            objective.id,
+            nameObjective,
+             deadline ?? objective.dueDate
+);
+          if(!saved){
+            setSaveError("La modification à echouer");
+            return;
+          }
+          router.back()
+        } catch(error){
+            console.error("Erreur lors de la modification de l'objectifs", error);
+            setSaveError('Une erreur est survenue. Réessaie.');
+        }finally{
+          setSaving(false)
+        }
+        
+      }
+
   return (
     <ThemedView style={styles.screen}>
       <SafeAreaView style={styles.safeArea} edges={['bottom']}>
@@ -60,11 +111,14 @@ export default function EditObjectiveScreen() {
           {/* Nom  */}
           <ThemedText style={styles.label}>Nom de l’objectif</ThemedText>
           <TextInput
+           value={name}
+           onChangeText={setName}
             style={[styles.input, fieldStyle, { color: theme.text }]}
             placeholder={objective.name}
             placeholderTextColor={theme.textSecondary}
             accessibilityLabel="Nom de l’objectif"
-            defaultValue={objective.name}
+           
+            
           />
 
           <ThemedText style={styles.label}>Date d’échéance</ThemedText>
@@ -104,7 +158,7 @@ export default function EditObjectiveScreen() {
           <View style={styles.actions}>
             <AppButton
               title="Enregistrer les modifications"
-              onPress={() => {}}
+              onPress={() => handleUpdatedObjective()}
               style={styles.actionButton}
             />
             <AppButton
