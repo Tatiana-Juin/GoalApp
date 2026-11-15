@@ -12,7 +12,7 @@ import {
   sauvegarder,
 } from '@/data/storage';
 import type { Objective } from '@/types/goal';
-
+// ca signifie retire id et completed 
 type NewObjective = Omit<Objective, 'id' | 'completed'>;
 
 type ObjectivesContextValue = {
@@ -25,11 +25,11 @@ type ObjectivesContextValue = {
 
 const ObjectivesContext = createContext<ObjectivesContextValue | null>(null);
 
-// CHARGER OBJECTIFS AU DEMARRAGE 
+
 export function ObjectivesProvider({ children }: PropsWithChildren) {
   const [objectives, setObjectives] = useState<Objective[]>([]);
   const [loading, setLoading] = useState(true);
-
+  // CHARGER OBJECTIFS AU DEMARRAGE 
   useEffect(() => {
     let active = true;
 
@@ -62,7 +62,7 @@ export function ObjectivesProvider({ children }: PropsWithChildren) {
     setObjectives(updatedObjectives);
     return true;
   }
-
+  // FONCTION POUR SUPPRESSION
   async function deleteObjective(objectiveId: string): Promise<boolean> {
     const updatedObjectives = objectives.filter(
       (objective) => objective.id !== objectiveId

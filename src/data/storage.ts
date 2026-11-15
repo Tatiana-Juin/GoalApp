@@ -28,7 +28,7 @@ export async function chargerObjectifs(): Promise<Objective[]> {
 		return [];
 	}
 }
-// FONCTION POUR AJOUTER DES DONNES 
+// FONCTION POUR AJOUTER DES OBJECTIFS 
 export async function sauvegarder(objectifs: Objective[]): Promise<boolean> {
 	try {
  		const donnees = JSON.stringify(objectifs);
@@ -39,3 +39,5 @@ export async function sauvegarder(objectifs: Objective[]): Promise<boolean> {
 		return false;
 	}
 }
+
+// FONCTION POUR AJOUTER DES SOUS OBJECTIFS

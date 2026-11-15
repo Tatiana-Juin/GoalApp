@@ -12,5 +12,5 @@ export interface SubObjective{
     id: string;
     name:string;
     completed:boolean;
-    // objective:Objective[];  
+     
 }
