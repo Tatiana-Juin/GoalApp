@@ -106,6 +106,7 @@ async function supprimerEtRetourner(objectiveId: string) {
       <SafeAreaView style={styles.safeArea} edges={['bottom']}>
         <ScrollView
           contentContainerStyle={styles.content}
+          keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
           {/* Nom de l'objectifs  */}
@@ -114,6 +115,7 @@ async function supprimerEtRetourner(objectiveId: string) {
           <ThemedText style={[styles.dueDate, { color: theme.textSecondary }]}>
             Échéance : {objective.dueDate.toLocaleDateString('fr-FR')}
           </ThemedText>
+
           {/* SOUS OBJECTIFS */}
           <ThemedView style={styles.section}>
             <ThemedText type="subtitle" style={styles.sectionTitle}>
