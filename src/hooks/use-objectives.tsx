@@ -21,6 +21,7 @@ type ObjectivesContextValue = {
   ajouterObjectif: (objective: NewObjective) => Promise<boolean>;
   deleteObjective: (objectiveId: string) => Promise<boolean>;
   updatedObjective: (objectiveId: string, name: string, dueDate: Date) => Promise<boolean>;
+  addSubObjective:(objectiveId:string,name:string)=> Promise<boolean>;
 };
 
 const ObjectivesContext = createContext<ObjectivesContextValue | null>(null);
@@ -132,7 +133,7 @@ export function ObjectivesProvider({ children }: PropsWithChildren) {
   return (
     // Dit ce qu'il fournis au composant
     <ObjectivesContext.Provider
-      value={{ objectives, loading, ajouterObjectif, deleteObjective, updatedObjective }}
+      value={{ objectives, loading, ajouterObjectif, deleteObjective, updatedObjective,addSubObjective }}
     >
       {children}
     </ObjectivesContext.Provider>

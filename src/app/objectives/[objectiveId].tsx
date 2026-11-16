@@ -14,7 +14,7 @@ import { useTheme } from '@/hooks/use-theme';
 
 export default function ObjectiveDetailScreen() {
   const { objectiveId } = useLocalSearchParams<{ objectiveId: string }>();
-  const { objectives, loading,deleteObjective } = useObjectives();
+  const { objectives, loading,deleteObjective,addSubObjective } = useObjectives();
   const objective = objectives.find((item) => item.id === objectiveId);
   const theme = useTheme();
    const router = useRouter();
