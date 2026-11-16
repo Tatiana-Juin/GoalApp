@@ -8,6 +8,7 @@ import { ThemedView } from '@/components/themed-view';
 import { Spacing } from '@/constants/theme';
 import { useObjectives } from '@/hooks/use-objectives';
 import { useTheme } from '@/hooks/use-theme';
+import { useState } from 'react';
 
 
 
@@ -18,6 +19,12 @@ export default function ObjectiveDetailScreen() {
   const objective = objectives.find((item) => item.id === objectiveId);
   const theme = useTheme();
    const router = useRouter();
+
+  //  Pour le nom
+  const [name,setName]= useState<string>('');
+  const [nameError,setNameError]= useState<string>("");
+  const [saveError, setSaveError] = useState('');
+    const [saving, setSaving] = useState(false);
 
   if (loading) {
     return (
@@ -66,6 +73,34 @@ async function supprimerEtRetourner(objectiveId: string) {
     ]);
   }
 
+  async function handleCreateSubObjective(){
+    if (!objective) return;
+    const nameSubObjective = name.trim();
+    setNameError('');
+    setSaveError('');
+    // Si le nom du sous objectifs est vide
+    if(!nameSubObjective){
+      setNameError("Saisis le nom d'un sous objectifs.");
+      return;
+    }
+    if (loading || saving) return;
+    setSaving(true);
+
+    try{
+      const saved = await addSubObjective(objective.id,nameSubObjective);
+        if (!saved) {
+            setSaveError('La sauvegarde a échoué. Réessaie.');
+            return;
+        }
+        setName('');
+    } catch(error){
+      console.error('Erreur lors de la création du sous objectifs', error);
+      setSaveError('Une erreur est survenue. Réessaie.');
+    } finally{
+       setSaving(false);
+    }
+  }
+
   return (
     <ThemedView style={styles.screen}>
       <SafeAreaView style={styles.safeArea} edges={['bottom']}>
@@ -85,10 +120,50 @@ async function supprimerEtRetourner(objectiveId: string) {
               Sous-objectifs
             </ThemedText>
 
+            {!objective.subObjectives?.length ? (
+              <ThemedText themeColor="textSecondary">
+                Aucun sous-objectif pour le moment.
+              </ThemedText>
+            ) : (
+              objective.subObjectives.map((subObjective) => (
+                <View
+                  key={subObjective.id}
+                  style={[
+                    styles.subObjectiveRow,
+                    { borderBottomColor: theme.backgroundElement },
+                  ]}
+                >
+                  <ThemedView
+                    style={[
+                      styles.checkbox,
+                      subObjective.completed && styles.checkboxCompleted,
+                    ]}
+                  >
+                    {subObjective.completed && (
+                      <ThemedText style={styles.checkmark}>✓</ThemedText>
+                    )}
+                  </ThemedView>
+                  <ThemedText
+                    style={[
+                      styles.subObjectiveName,
+                      subObjective.completed && styles.completedText,
+                    ]}
+                  >
+                    {subObjective.name}
+                  </ThemedText>
+                </View>
+              ))
+            )}
+
             <View style={styles.addSubObjectiveRow}>
               <TextInput
                 placeholder="Nom du sous-objectif"
                 placeholderTextColor={theme.textSecondary}
+                value={name}
+                onChangeText={(value) => {
+                    setName(value);
+                    if (value.trim()) setNameError('');
+                }}
                 accessibilityLabel="Nom du nouveau sous-objectif"
                 style={[
                   styles.input,
@@ -101,10 +176,16 @@ async function supprimerEtRetourner(objectiveId: string) {
               <AppButton
                 title="+"
                 accessibilityLabel="Ajouter un sous-objectif"
-                onPress={() => {}}
+                onPress={handleCreateSubObjective}
                 style={styles.addButton}
               />
             </View>
+            {nameError !== '' && (
+              <ThemedText style={styles.errorText}>{nameError}</ThemedText>
+            )}
+            {saveError !== '' && (
+              <ThemedText style={styles.errorText}>{saveError}</ThemedText>
+            )}
           </ThemedView>
 
           <ThemedView style={styles.objectiveActions}>
@@ -234,4 +315,8 @@ const styles = StyleSheet.create({
     textDecorationLine: 'line-through',
     opacity: 0.65,
   },
+  errorText: {
+        color: '#DC2626',
+        marginBottom: 16,
+    },
 });
