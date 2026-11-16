@@ -3,12 +3,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import type { Objective } from '@/types/goal';
 
 const OBJECTIVES_KEY = '@goalapp/objectives';
-// FONCTION POUR CREER UN ID UNIQUE 
-export function creerIdUnique(objectifs: Objective[]): string {
+// FONCTION POUR CREER UN ID UNIQUE POUR LES OBJECTIFS ET SOUS OBJCTIFS
+export function creerIdUnique<T extends { id: string }>(elements: T[]): string {
 	let id: string;
 	do {
 		id = `${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
-	} while (objectifs.some((objectif) => objectif.id === id));
+	} while (elements.some((element) => element.id === id));
 
 	return id;
 }

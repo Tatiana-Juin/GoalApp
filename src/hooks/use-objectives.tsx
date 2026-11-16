@@ -11,7 +11,7 @@ import {
   creerIdUnique,
   sauvegarder,
 } from '@/data/storage';
-import type { Objective } from '@/types/goal';
+import type { Objective, SubObjective } from '@/types/goal';
 // ca signifie retire id et completed 
 type NewObjective = Omit<Objective, 'id' | 'completed'>;
 
@@ -99,6 +99,36 @@ export function ObjectivesProvider({ children }: PropsWithChildren) {
     return true;
   }
 
+  // POUR AJOUTER UN SOUS OBJECTIVE
+  async function addSubObjective(objectiveId:string,name:string) {
+    // verifie que ca a charger
+    if (loading) return false;
+    const parentObjective = objectives.find((item) => item.id === objectiveId);
+    if (!parentObjective) return false;
+
+    // creation d'un objet
+     const newSubObjective:SubObjective={
+      id:creerIdUnique(parentObjective.subObjectives ?? []),
+      name,
+      completed:false
+    }
+    // parcourt de la liste d'objectifs et récupere le bon objective pour ensuite le copier et ajouter un sous objectifs
+    const updatedObjectives = objectives.map((item)=>
+      item.id === objectiveId
+      ? {
+        ...item,
+        subObjectives:[...(item.subObjectives ?? []),newSubObjective]
+      }
+      : item
+    );
+
+     const saved = await sauvegarder(updatedObjectives);
+
+    if (!saved) return false;
+
+    setObjectives(updatedObjectives);
+    return true;
+  }
   return (
     // Dit ce qu'il fournis au composant
     <ObjectivesContext.Provider
