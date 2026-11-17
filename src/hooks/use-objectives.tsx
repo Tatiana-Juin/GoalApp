@@ -130,6 +130,16 @@ export function ObjectivesProvider({ children }: PropsWithChildren) {
     setObjectives(updatedObjectives);
     return true;
   }
+
+  async function objectiveValide(objectiveId:string,subObjectiveId:string){
+    if (loading) return false;
+    // retrouve l'objectifs parent 
+    const parentObjective = objectives.find((item) => item.id === objectiveId);
+    if (!parentObjective) return false;
+
+    // pour recuperer id du sous objectifs 
+    
+  }
   return (
     // Dit ce qu'il fournis au composant
     <ObjectivesContext.Provider

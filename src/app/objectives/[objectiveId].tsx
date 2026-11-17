@@ -10,9 +10,6 @@ import { useObjectives } from '@/hooks/use-objectives';
 import { useTheme } from '@/hooks/use-theme';
 import { useState } from 'react';
 
-
-
-
 export default function ObjectiveDetailScreen() {
   const { objectiveId } = useLocalSearchParams<{ objectiveId: string }>();
   const { objectives, loading,deleteObjective,addSubObjective } = useObjectives();
