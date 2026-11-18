@@ -9,6 +9,8 @@ import { Spacing } from '@/constants/theme';
 import { useObjectives } from '@/hooks/use-objectives';
 import { useTheme } from '@/hooks/use-theme';
 import { useState } from 'react';
+import { ProgressBar } from '@/components/ProgressBar';
+import { getProgress } from '@/utils/progress';
 
 export default function ObjectiveDetailScreen() {
   const { objectiveId } = useLocalSearchParams<{ objectiveId: string }>();
@@ -114,6 +116,8 @@ async function supprimerEtRetourner(objectiveId: string) {
           <ThemedText style={[styles.dueDate, { color: theme.textSecondary }]}>
             Échéance : {objective.dueDate.toLocaleDateString('fr-FR')}
           </ThemedText>
+          {/* Pour la barre de progression d'un objectifs */}
+          <ProgressBar progress={getProgress(objective.subObjectives ?? [])} />
 
           {/* SOUS OBJECTIFS */}
           <ThemedView style={styles.section}>
