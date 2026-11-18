@@ -164,7 +164,7 @@ export default function EditObjectiveScreen() {
             <AppButton
               title="Annuler"
               variant="secondary"
-              onPress={() => {}}
+              onPress={() => router.back()}
               style={styles.actionButton}
             />
           </View>
