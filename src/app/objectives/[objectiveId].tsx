@@ -1,5 +1,5 @@
 import { useLocalSearchParams,useRouter } from 'expo-router';
-import { ScrollView, StyleSheet, TextInput, View,Alert,Platform } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, TextInput, View, Alert, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AppButton } from '@/components/AppButton';
@@ -12,7 +12,7 @@ import { useState } from 'react';
 
 export default function ObjectiveDetailScreen() {
   const { objectiveId } = useLocalSearchParams<{ objectiveId: string }>();
-  const { objectives, loading,deleteObjective,addSubObjective } = useObjectives();
+  const { objectives, loading,deleteObjective,addSubObjective,subObjectiveValide } = useObjectives();
   const objective = objectives.find((item) => item.id === objectiveId);
   const theme = useTheme();
    const router = useRouter();
@@ -22,6 +22,7 @@ export default function ObjectiveDetailScreen() {
   const [nameError,setNameError]= useState<string>("");
   const [saveError, setSaveError] = useState('');
     const [saving, setSaving] = useState(false);
+
 
   if (loading) {
     return (
@@ -97,6 +98,7 @@ async function supprimerEtRetourner(objectiveId: string) {
        setSaving(false);
     }
   }
+  
 
   return (
     <ThemedView style={styles.screen}>
@@ -132,16 +134,20 @@ async function supprimerEtRetourner(objectiveId: string) {
                     { borderBottomColor: theme.backgroundElement },
                   ]}
                 >
-                  <ThemedView
+                  {/* Pour la case a cocher */}
+                  <Pressable
                     style={[
                       styles.checkbox,
                       subObjective.completed && styles.checkboxCompleted,
                     ]}
+                    onPress={()=>subObjectiveValide(objective.id,subObjective.id)}
+                    accessibilityRole="checkbox"
+                    accessibilityState={{ checked: subObjective.completed }}
                   >
                     {subObjective.completed && (
                       <ThemedText style={styles.checkmark}>✓</ThemedText>
                     )}
-                  </ThemedView>
+                  </Pressable>
                   <ThemedText
                     style={[
                       styles.subObjectiveName,
