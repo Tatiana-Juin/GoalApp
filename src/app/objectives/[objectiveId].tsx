@@ -1,5 +1,5 @@
 import { useLocalSearchParams,useRouter } from 'expo-router';
-import { Pressable, ScrollView, StyleSheet, TextInput, View, Alert, Platform } from 'react-native';
+import { KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, TextInput, View, Alert, Platform } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AppButton } from '@/components/AppButton';
@@ -105,11 +105,15 @@ async function supprimerEtRetourner(objectiveId: string) {
   return (
     <ThemedView style={styles.screen}>
       <SafeAreaView style={styles.safeArea} edges={['bottom']}>
-        <ScrollView
-          contentContainerStyle={styles.content}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
+        <KeyboardAvoidingView
+          style={styles.keyboardAvoidingView}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
+          <ScrollView
+            contentContainerStyle={styles.content}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+          >
           {/* Nom de l'objectifs  */}
           <ThemedText style={styles.title}>{objective.name}</ThemedText>
           {/* Date de l'objectifs  */}
@@ -170,8 +174,8 @@ async function supprimerEtRetourner(objectiveId: string) {
                 placeholderTextColor={theme.textSecondary}
                 value={name}
                 onChangeText={(value) => {
-                    setName(value);
-                    if (value.trim()) setNameError('');
+                  setName(value);
+                  if (value.trim()) setNameError('');
                 }}
                 accessibilityLabel="Nom du nouveau sous-objectif"
                 style={[
@@ -202,7 +206,7 @@ async function supprimerEtRetourner(objectiveId: string) {
             <AppButton
               title="Modifier l'objectif"
               variant="secondary"
-              onPress={() => 
+              onPress={() =>
                 router.push({
                   pathname:'/objectives/edit-objective',
                   params:{objectiveId:objective.id}
@@ -218,7 +222,8 @@ async function supprimerEtRetourner(objectiveId: string) {
               style={styles.actionButton}
             />
           </ThemedView>
-        </ScrollView>
+          </ScrollView>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     </ThemedView>
   );
@@ -229,6 +234,9 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   safeArea: {
+    flex: 1,
+  },
+  keyboardAvoidingView: {
     flex: 1,
   },
   content: {
