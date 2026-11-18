@@ -23,8 +23,9 @@ export default function ObjectiveDetailScreen() {
   const [name,setName]= useState<string>('');
   const [nameError,setNameError]= useState<string>("");
   const [saveError, setSaveError] = useState('');
-    const [saving, setSaving] = useState(false);
-
+  const [saving, setSaving] = useState(false);
+  // Pour faire apparaitre le champs input si c'est true 
+  const [updated,setUpdated] = useState<boolean>(false);
 
   if (loading) {
     return (
@@ -156,6 +157,7 @@ async function supprimerEtRetourner(objectiveId: string) {
                       <ThemedText style={styles.checkmark}>✓</ThemedText>
                     )}
                   </Pressable>
+                  {/* Nom du sous objectifs */}
                   <ThemedText
                     style={[
                       styles.subObjectiveName,
@@ -168,7 +170,7 @@ async function supprimerEtRetourner(objectiveId: string) {
                   <AppButton
                     title="modifier"
                     variant="secondary"
-                    onPress={() => {}}
+                    onPress={() => setUpdated(!updated)}
                     style={styles.actionButton}
                   />
                   {/* Bouton supprimer sous objectifs  */}
