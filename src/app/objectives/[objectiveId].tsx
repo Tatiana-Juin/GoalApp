@@ -164,6 +164,20 @@ async function supprimerEtRetourner(objectiveId: string) {
                   >
                     {subObjective.name}
                   </ThemedText>
+                   {/* Bouton modifier sous objectifs  */}
+                  <AppButton
+                    title="modifier"
+                    variant="secondary"
+                    onPress={() => {}}
+                    style={styles.actionButton}
+                  />
+                  {/* Bouton supprimer sous objectifs  */}
+                  <AppButton
+                    title="Supprimer"
+                    variant="danger"
+                    onPress={() => {}}
+                    style={styles.actionButton}
+                  />
                 </View>
               ))
             )}
