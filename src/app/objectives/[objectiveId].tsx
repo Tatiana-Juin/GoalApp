@@ -24,8 +24,9 @@ export default function ObjectiveDetailScreen() {
   const [nameError,setNameError]= useState<string>("");
   const [saveError, setSaveError] = useState('');
   const [saving, setSaving] = useState(false);
-  // Pour faire apparaitre le champs input si c'est true 
-  const [updated,setUpdated] = useState<boolean>(false);
+
+  const [editingSubObjectiveId, setEditingSubObjectiveId] = useState<string | null>(null);
+  const [editedSubObjectiveName, setEditedSubObjectiveName] = useState('');
 
   if (loading) {
     return (
@@ -143,6 +144,38 @@ async function supprimerEtRetourner(objectiveId: string) {
                     { borderBottomColor: theme.backgroundElement },
                   ]}
                 >
+                  {/* Condition pour afficher le input du sous objectifs */}
+                  {editingSubObjectiveId === subObjective.id ? (
+                    <>
+                      <TextInput
+                        value={editedSubObjectiveName}
+                        onChangeText={setEditedSubObjectiveName}
+                        accessibilityLabel="Modifier le nom du sous-objectif"
+                        style={[
+                          styles.input,
+                          {
+                            color: theme.text,
+                            borderColor: theme.backgroundElement,
+                          },
+                        ]}
+                      />
+                    {/* Pour le bouton +  */}
+                      <AppButton
+                        title="modifier"
+                        variant="danger"
+                        onPress={() => {}}
+                        style={styles.actionButton}
+                      />
+                      <AppButton
+                        title="annuler"
+                        variant="secondary"
+                        onPress={() => {}}
+                        style={styles.actionButton}
+                      />
+                    </>
+                    
+                  ) : (
+                    <>
                   {/* Pour la case a cocher */}
                   <Pressable
                     style={[
@@ -170,7 +203,10 @@ async function supprimerEtRetourner(objectiveId: string) {
                   <AppButton
                     title="modifier"
                     variant="secondary"
-                    onPress={() => setUpdated(!updated)}
+                    onPress={() => {
+                      setEditingSubObjectiveId(subObjective.id);
+                      setEditedSubObjectiveName(subObjective.name);
+                    }}
                     style={styles.actionButton}
                   />
                   {/* Bouton supprimer sous objectifs  */}
@@ -180,6 +216,8 @@ async function supprimerEtRetourner(objectiveId: string) {
                     onPress={() => {}}
                     style={styles.actionButton}
                   />
+                  </>
+                  )}
                 </View>
               ))
             )}
