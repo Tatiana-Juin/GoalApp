@@ -15,7 +15,7 @@ import { SymbolView } from 'expo-symbols';
 
 export default function ObjectiveDetailScreen() {
   const { objectiveId } = useLocalSearchParams<{ objectiveId: string }>();
-  const { objectives, loading,deleteObjective,addSubObjective,subObjectiveValide,updatedSubObjective } = useObjectives();
+  const { objectives, loading,deleteObjective,addSubObjective,subObjectiveValide,updatedSubObjective,deleteSubObjective } = useObjectives();
   const objective = objectives.find((item) => item.id === objectiveId);
   const theme = useTheme();
    const router = useRouter();
@@ -51,6 +51,7 @@ async function supprimerEtRetourner(objectiveId: string) {
     router.back();
   }
 }
+// POUR SUPPRIMER UN OBJECTIVES NOTIFICATION
   function confirmationDelete(index:string){
     const message = "Voulez vous vraiment supprimer cette objective ?";
 
@@ -73,6 +74,42 @@ async function supprimerEtRetourner(objectiveId: string) {
         ,
       },
       
+    ]);
+  }
+// VERIFICATION POUR SUPPRIMER UN SOUS OBJECTIVES
+async function handleDeleteSubObjective(subObjectiveId: string) {
+    if (!objective || loading || saving) return;
+    setSaveError('');
+    setSaving(true);
+
+    try {
+      const deleted = await deleteSubObjective(objective.id, subObjectiveId);
+      if (!deleted) {
+        setSaveError('La suppression du sous-objectif a échoué. Réessaie.');
+      }
+    } catch (error) {
+      console.error('Erreur lors de la suppression du sous-objectif', error);
+      setSaveError('Une erreur est survenue pendant la suppression. Réessaie.');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+// NOTIFICATION POUR SUPPRIMER UN SOUS OBJECTIVE
+function confirmDeleteSubObjective(subObjectiveId: string, subObjectiveName: string) {
+    const message = `Voulez-vous vraiment supprimer le sous-objectif « ${subObjectiveName} » ?`;
+    const confirmDeletion = () => {
+      void handleDeleteSubObjective(subObjectiveId);
+    };
+
+    if (Platform.OS === 'web') {
+      if (globalThis.confirm(message)) confirmDeletion();
+      return;
+    }
+
+    Alert.alert('Supprimer le sous-objectif ?', message, [
+      { text: 'Annuler', style: 'cancel' },
+      { text: 'Supprimer', style: 'destructive', onPress: confirmDeletion },
     ]);
   }
 
@@ -246,7 +283,7 @@ async function supprimerEtRetourner(objectiveId: string) {
                   </Pressable>
                   {/* Bouton supprimer sous objectifs  */}
                   <Pressable
-                    onPress={() => {}}
+                    onPress={() => confirmDeleteSubObjective(subObjective.id, subObjective.name)}
                     style={[styles.subObjectiveIconButton, styles.deleteSubObjectiveButton]}
                     accessibilityRole="button"
                     accessibilityLabel="Supprimer le sous-objectif"
