@@ -23,6 +23,7 @@ type ObjectivesContextValue = {
   updatedObjective: (objectiveId: string, name: string, dueDate: Date) => Promise<boolean>;
   addSubObjective:(objectiveId:string,name:string)=> Promise<boolean>;
   subObjectiveValide:(objectiveId:string,subObjectiveId:string)=> Promise<boolean>;
+  updatedSubObjective:(objectiveId:string,subObjectiveId:string,nameSubObjective:string)=> Promise<boolean>
 };
 
 const ObjectivesContext = createContext<ObjectivesContextValue | null>(null);
@@ -168,10 +169,44 @@ export function ObjectivesProvider({ children }: PropsWithChildren) {
     setObjectives(updateObjectives);
     return true;
   }
+
+  async function updatedSubObjective(objectiveId:string,subObjectiveId:string,nameSubObjective:string) : Promise<boolean>{
+    // retrouve l'objectifs parent 
+    const parentObjective = objectives.find((item) => item.id === objectiveId);
+    if (!parentObjective) return false;
+    // verifie que le sous objectifs existe dans le parent avant de continuer
+    const subObjectiveExists = (parentObjective.subObjectives ?? []).some(
+      (item) => item.id === subObjectiveId
+    );
+    if (!subObjectiveExists) return false;
+    // pour recuperer id du sous objectifs et mettre a jours son nom 
+    const updateSubObjective = (parentObjective.subObjectives ?? []).map((item)=>
+      item.id === subObjectiveId
+      ?{
+        ...item,name:nameSubObjective
+      }: item
+    );
+
+     // inserer le sous objectifs mis a jours dans le parent 
+    const updateObjectives = objectives.map((objective)=>
+      objective.id === objectiveId
+      ?
+      {...objective,subObjectives:updateSubObjective}
+      : objective
+    )
+     const saved =  await sauvegarder(updateObjectives);
+
+    if (!saved) {
+      return false;
+    }
+
+    setObjectives(updateObjectives);
+    return true;
+  }
   return (
     // Dit ce qu'il fournis au composant
     <ObjectivesContext.Provider
-      value={{ objectives, loading, ajouterObjectif, deleteObjective, updatedObjective,addSubObjective,subObjectiveValide }}
+      value={{ objectives, loading, ajouterObjectif, deleteObjective, updatedObjective,addSubObjective,subObjectiveValide,updatedSubObjective }}
     >
       {children}
     </ObjectivesContext.Provider>

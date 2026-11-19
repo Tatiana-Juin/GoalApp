@@ -15,7 +15,7 @@ import { SymbolView } from 'expo-symbols';
 
 export default function ObjectiveDetailScreen() {
   const { objectiveId } = useLocalSearchParams<{ objectiveId: string }>();
-  const { objectives, loading,deleteObjective,addSubObjective,subObjectiveValide } = useObjectives();
+  const { objectives, loading,deleteObjective,addSubObjective,subObjectiveValide,updatedSubObjective } = useObjectives();
   const objective = objectives.find((item) => item.id === objectiveId);
   const theme = useTheme();
    const router = useRouter();
@@ -103,6 +103,34 @@ async function supprimerEtRetourner(objectiveId: string) {
        setSaving(false);
     }
   }
+
+  async function handleUpdateSubObjective(){
+    // si objective existe pas ou que id est egale a null 
+    if (!objective || editingSubObjectiveId === null) return;
+    const nameSubObjective = editedSubObjectiveName .trim();
+    if(!nameSubObjective){
+      setNameError("Saisis le nom d'un sous objectifs.");
+      return;
+    }
+    if (loading || saving) return;
+    setSaving(true);
+
+    try{
+      const saved = await updatedSubObjective(objective.id,editingSubObjectiveId,nameSubObjective);
+       if (!saved) {
+            setSaveError('La sauvegarde a échoué. Réessaie.');
+            return;
+        }
+        setEditedSubObjectiveName('');
+        setEditingSubObjectiveId(null);
+    } catch(error){
+      console.error("Erreur lors de la modification d'un sous objectifs", error);
+      setSaveError('Une erreur est survenue. Réessaie.');
+    }finally{
+      setSaving(false);
+    }
+
+  }
   
 
   return (
@@ -164,7 +192,7 @@ async function supprimerEtRetourner(objectiveId: string) {
                       <AppButton
                         title="modifier"
                         variant="danger"
-                        onPress={() => {}}
+                        onPress={() => void handleUpdateSubObjective()}
                         style={styles.actionButton}
                       />
                       <AppButton
