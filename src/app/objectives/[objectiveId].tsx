@@ -11,6 +11,7 @@ import { useTheme } from '@/hooks/use-theme';
 import { useState } from 'react';
 import { ProgressBar } from '@/components/ProgressBar';
 import { getProgress } from '@/utils/progress';
+import { SymbolView } from 'expo-symbols';
 
 export default function ObjectiveDetailScreen() {
   const { objectiveId } = useLocalSearchParams<{ objectiveId: string }>();
@@ -169,7 +170,7 @@ async function supprimerEtRetourner(objectiveId: string) {
                       <AppButton
                         title="annuler"
                         variant="secondary"
-                        onPress={() => {}}
+                        onPress={() => setEditingSubObjectiveId(null)}
                         style={styles.actionButton}
                       />
                     </>
@@ -200,22 +201,34 @@ async function supprimerEtRetourner(objectiveId: string) {
                     {subObjective.name}
                   </ThemedText>
                    {/* Bouton modifier sous objectifs  */}
-                  <AppButton
-                    title="modifier"
-                    variant="secondary"
+                  <Pressable
                     onPress={() => {
                       setEditingSubObjectiveId(subObjective.id);
                       setEditedSubObjectiveName(subObjective.name);
                     }}
-                    style={styles.actionButton}
-                  />
+                    style={[styles.subObjectiveIconButton, styles.editSubObjectiveButton]}
+                    accessibilityRole="button"
+                    accessibilityLabel="Modifier le sous-objectif"
+                  >
+                    <SymbolView
+                      name={{ ios: 'pencil', android: 'edit', web: 'edit' }}
+                      size={20}
+                      tintColor="#FFFFFF"
+                    />
+                  </Pressable>
                   {/* Bouton supprimer sous objectifs  */}
-                  <AppButton
-                    title="Supprimer"
-                    variant="danger"
+                  <Pressable
                     onPress={() => {}}
-                    style={styles.actionButton}
-                  />
+                    style={[styles.subObjectiveIconButton, styles.deleteSubObjectiveButton]}
+                    accessibilityRole="button"
+                    accessibilityLabel="Supprimer le sous-objectif"
+                  >
+                    <SymbolView
+                      name={{ ios: 'trash', android: 'delete', web: 'delete' }}
+                      size={20}
+                      tintColor="#FFFFFF"
+                    />
+                  </Pressable>
                   </>
                   )}
                 </View>
@@ -351,6 +364,19 @@ const styles = StyleSheet.create({
   actionButton: {
     minHeight: 48,
     justifyContent: 'center',
+  },
+  subObjectiveIconButton: {
+    width: 44,
+    height: 44,
+    borderRadius: 8,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  editSubObjectiveButton: {
+    backgroundColor: '#64748B',
+  },
+  deleteSubObjectiveButton: {
+    backgroundColor: '#DC2626',
   },
   subObjectiveRow: {
     minHeight: 58,
