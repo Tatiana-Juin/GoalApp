@@ -8,6 +8,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
 import { useObjectives } from '@/hooks/use-objectives';
+import { isObjectiveCompleted } from '@/utils/progress';
 import { useRouter } from 'expo-router';
 
 function getDevMenuHint() {
@@ -34,6 +35,9 @@ export default function HomeScreen() {
   const router = useRouter();
   // lit les objectifs 
   const { objectives, loading } = useObjectives();
+  const activeObjectives = objectives.filter(
+    (objective) => !isObjectiveCompleted(objective)
+  );
   return (
     <ThemedView style={styles.container}>
       {/* garde le contenu dans la zone visible */}
@@ -42,7 +46,7 @@ export default function HomeScreen() {
         <ThemedView style={styles.heroSection}>
           {/* texte s'adapte a la couleur de fond */}
           <ThemedText type="title" style={styles.title}>
-            Tous les objectifs
+            Objectifs en cours
           </ThemedText>
         </ThemedView>
         
@@ -60,9 +64,13 @@ export default function HomeScreen() {
             <ThemedText themeColor="textSecondary">
               Aucun objectif pour le moment.
             </ThemedText>
+          ) : activeObjectives.length === 0 ? (
+            <ThemedText themeColor="textSecondary">
+              Tous tes objectifs sont terminés !
+            </ThemedText>
           ) : (
             <ObjectiveCard
-              objectives={objectives}
+              objectives={activeObjectives}
               onObjectivePress={(objectiveId) =>
                 router.push({
                   pathname: '/objectives/[objectiveId]',

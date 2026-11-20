@@ -76,7 +76,65 @@ async function supprimerEtRetourner(objectiveId: string) {
       
     ]);
   }
-// VERIFICATION POUR SUPPRIMER UN SOUS OBJECTIVES
+
+  // POUR L'AJOUT D'UN SOUS OBJECTIVE 
+  async function handleCreateSubObjective(){
+    if (!objective) return;
+    const nameSubObjective = name.trim();
+    setNameError('');
+    setSaveError('');
+    // Si le nom du sous objectifs est vide
+    if(!nameSubObjective){
+      setNameError("Saisis le nom d'un sous objectifs.");
+      return;
+    }
+    if (loading || saving) return;
+    setSaving(true);
+
+    try{
+      const saved = await addSubObjective(objective.id,nameSubObjective);
+        if (!saved) {
+            setSaveError('La sauvegarde a échoué. Réessaie.');
+            return;
+        }
+        setName('');
+    } catch(error){
+      console.error('Erreur lors de la création du sous objectifs', error);
+      setSaveError('Une erreur est survenue. Réessaie.');
+    } finally{
+       setSaving(false);
+    }
+  }
+
+  // POUR LA MODIFICATION 
+  async function handleUpdateSubObjective(){
+    // si objective existe pas ou que id est egale a null 
+    if (!objective || editingSubObjectiveId === null) return;
+    const nameSubObjective = editedSubObjectiveName .trim();
+    if(!nameSubObjective){
+      setNameError("Saisis le nom d'un sous objectifs.");
+      return;
+    }
+    if (loading || saving) return;
+    setSaving(true);
+
+    try{
+      const saved = await updatedSubObjective(objective.id,editingSubObjectiveId,nameSubObjective);
+       if (!saved) {
+            setSaveError('La sauvegarde a échoué. Réessaie.');
+            return;
+        }
+        setEditedSubObjectiveName('');
+        setEditingSubObjectiveId(null);
+    } catch(error){
+      console.error("Erreur lors de la modification d'un sous objectifs", error);
+      setSaveError('Une erreur est survenue. Réessaie.');
+    }finally{
+      setSaving(false);
+    }
+
+  }
+  // VERIFICATION POUR SUPPRIMER UN SOUS OBJECTIVES
 async function handleDeleteSubObjective(subObjectiveId: string) {
     if (!objective || loading || saving) return;
     setSaveError('');
@@ -111,62 +169,6 @@ function confirmDeleteSubObjective(subObjectiveId: string, subObjectiveName: str
       { text: 'Annuler', style: 'cancel' },
       { text: 'Supprimer', style: 'destructive', onPress: confirmDeletion },
     ]);
-  }
-
-  async function handleCreateSubObjective(){
-    if (!objective) return;
-    const nameSubObjective = name.trim();
-    setNameError('');
-    setSaveError('');
-    // Si le nom du sous objectifs est vide
-    if(!nameSubObjective){
-      setNameError("Saisis le nom d'un sous objectifs.");
-      return;
-    }
-    if (loading || saving) return;
-    setSaving(true);
-
-    try{
-      const saved = await addSubObjective(objective.id,nameSubObjective);
-        if (!saved) {
-            setSaveError('La sauvegarde a échoué. Réessaie.');
-            return;
-        }
-        setName('');
-    } catch(error){
-      console.error('Erreur lors de la création du sous objectifs', error);
-      setSaveError('Une erreur est survenue. Réessaie.');
-    } finally{
-       setSaving(false);
-    }
-  }
-
-  async function handleUpdateSubObjective(){
-    // si objective existe pas ou que id est egale a null 
-    if (!objective || editingSubObjectiveId === null) return;
-    const nameSubObjective = editedSubObjectiveName .trim();
-    if(!nameSubObjective){
-      setNameError("Saisis le nom d'un sous objectifs.");
-      return;
-    }
-    if (loading || saving) return;
-    setSaving(true);
-
-    try{
-      const saved = await updatedSubObjective(objective.id,editingSubObjectiveId,nameSubObjective);
-       if (!saved) {
-            setSaveError('La sauvegarde a échoué. Réessaie.');
-            return;
-        }
-        setEditedSubObjectiveName('');
-        setEditingSubObjectiveId(null);
-    } catch(error){
-      console.error("Erreur lors de la modification d'un sous objectifs", error);
-      setSaveError('Une erreur est survenue. Réessaie.');
-    }finally{
-      setSaving(false);
-    }
-
   }
   
 
