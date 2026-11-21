@@ -170,6 +170,47 @@ function confirmDeleteSubObjective(subObjectiveId: string, subObjectiveName: str
       { text: 'Supprimer', style: 'destructive', onPress: confirmDeletion },
     ]);
   }
+
+  // FUNCTION POUR AFFICHER UN MESSAGE DE FELICITATIONS SI TU VIENS DE COCHER LA DERNIERE CASE A COCHER
+  async function handleSubObjectiveToggle(subObjectiveId: string) {
+    if (!objective || loading || saving) return;
+    const subObjectives = objective.subObjectives ?? [];
+    const subObjective = subObjectives.find((item) => item.id === subObjectiveId);
+    if (!subObjective) return;
+
+    const completesObjective =
+      !subObjective.completed &&
+      subObjectives.every(
+        (item) => item.id === subObjectiveId || item.completed
+      );
+
+    setSaveError('');
+    setSaving(true);
+    try {
+      const saved = await subObjectiveValide(objective.id, subObjectiveId);
+      if (!saved) {
+        setSaveError('La sauvegarde a échoué. Réessaie.');
+        return;
+      }
+
+      if (completesObjective) {
+        const message = 'Félicitations, tu as atteint ton objectif !';
+        if (Platform.OS === 'web') {
+          globalThis.alert(message);
+          router.replace('/');
+        } else {
+          Alert.alert('Félicitations !', message, [
+            { text: 'OK', onPress: () => router.replace('/') },
+          ]);
+        }
+      }
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour du sous-objectif', error);
+      setSaveError('Une erreur est survenue. Réessaie.');
+    } finally {
+      setSaving(false);
+    }
+  }
   
 
   return (
@@ -250,7 +291,7 @@ function confirmDeleteSubObjective(subObjectiveId: string, subObjectiveName: str
                       styles.checkbox,
                       subObjective.completed && styles.checkboxCompleted,
                     ]}
-                    onPress={()=>subObjectiveValide(objective.id,subObjective.id)}
+                    onPress={() => void handleSubObjectiveToggle(subObjective.id)}
                     accessibilityRole="checkbox"
                     accessibilityState={{ checked: subObjective.completed }}
                   >
