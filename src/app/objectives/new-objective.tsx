@@ -3,8 +3,9 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { useObjectives } from '@/hooks/use-objectives';
 import { useTheme } from '@/hooks/use-theme';
-import { Spacing } from '@/constants/theme';
+import { FontSizes, Spacing } from '@/constants/theme';
 import { formStyles } from '@/constants/form-styles';
+import { layoutStyles } from '@/constants/layout-styles';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
@@ -69,13 +70,19 @@ export default function NewObjectiveScreen() {
     };
 
     return (
-        <ThemedView style={styles.container}>
+        <ThemedView style={[layoutStyles.flexFill, styles.container]}>
             {/* nom de la page  */}
-            <ThemedText style={styles.title}>Nouvel objectif</ThemedText>
+            <ThemedText style={[formStyles.formTitle, styles.title]}>Nouvel objectif</ThemedText>
             {/* NOM DE L'OBJECTIF */}
-            <ThemedText style={styles.label}>Nom de l'objectif</ThemedText>
+            <ThemedText style={formStyles.formLabel}>Nom de l'objectif</ThemedText>
             <TextInput
-                style={[formStyles.inputBase, styles.input, fieldStyle, { color: theme.text }]}
+                style={[
+                    formStyles.inputBase,
+                    formStyles.objectiveInput,
+                    styles.input,
+                    fieldStyle,
+                    { color: theme.text },
+                ]}
                 value={name}
                 placeholder="Ex. : apprendre React"
                 placeholderTextColor={theme.textSecondary}
@@ -90,7 +97,7 @@ export default function NewObjectiveScreen() {
                 <ThemedText style={formStyles.errorText}>{nameError}</ThemedText>
             )}
             {/* DATE D'ECHEANCE  */}
-            <ThemedText style={styles.label}>Date d'échéance </ThemedText>
+            <ThemedText style={formStyles.formLabel}>Date d'échéance </ThemedText>
             <Pressable
                 style={[formStyles.dateFieldBase, styles.dateField, fieldStyle]}
                 onPress={() => setShowDatePicker(true)}
@@ -143,22 +150,13 @@ export default function NewObjectiveScreen() {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         padding: Spacing.four,
     },
     title: {
-        fontSize: 28,
-        fontWeight: '700',
         marginBottom: Spacing.four,
-    },
-    label: {
-        fontWeight: '600',
-        marginBottom: Spacing.two,
     },
     input: {
-        minHeight: 52,
         paddingHorizontal: 14,
-        marginBottom: Spacing.four,
     },
     dateField: {
         paddingHorizontal: 14,
@@ -166,24 +164,7 @@ const styles = StyleSheet.create({
         marginBottom: Spacing.four,
     },
     dateText: {
-        fontSize: 16,
+        fontSize: FontSizes.body,
         flexShrink: 1,
     },
-    // categoryList: {
-    //     flexDirection: 'row',
-    //     flexWrap: 'wrap',
-    //     gap: Spacing.two,
-    //     paddingBottom: Spacing.four,
-    // },
-    // categoryButton: {
-    //     minHeight: 36,
-    //     borderWidth: 1,
-    //     borderRadius: 18,
-    //     paddingHorizontal: 12,
-    //     justifyContent: 'center',
-    // },
-    // categoryText: {
-    //     fontSize: 14,
-    //     fontWeight: '600',
-    // },
 });

@@ -3,6 +3,7 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import type { Objective } from '@/types/goal';
 import { getProgress } from '@/utils/progress';
+import { FontSizes, FontWeights } from '@/constants/theme';
 import { Pressable, StyleSheet } from 'react-native';
 
 type ObjectiveCardProps = {
@@ -49,10 +50,10 @@ const styles = StyleSheet.create({
   },
   themeText: {
     marginBottom: 16,
-    fontSize: 18,
+    fontSize: FontSizes.largeBody,
   },
   title: {
     fontSize: 23,
-    fontWeight: 'bold',
+    fontWeight: FontWeights.bold,
   },
 });

@@ -33,6 +33,26 @@ export const ActionColors = {
   onAction: '#FFFFFF',
 } as const;
 
+export const FontSizes = {
+  caption: 14,
+  body: 16,
+  largeBody: 18,
+  formTitle: 28,
+  detailTitle: 34,
+  sectionTitle: 24,
+} as const;
+
+export const FontWeights = {
+  regular: '500',
+  semibold: '600',
+  bold: '700',
+} as const;
+
+export const Radii = {
+  progress: 5,
+  control: 8,
+} as const;
+
 export const Fonts = Platform.select({
   ios: {
     /** iOS `UIFontDescriptorSystemDesignDefault` */

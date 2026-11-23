@@ -5,8 +5,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { AppButton } from '@/components/AppButton';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { ActionColors, Spacing } from '@/constants/theme';
+import { ActionColors, FontSizes, FontWeights, Radii, Spacing } from '@/constants/theme';
 import { formStyles } from '@/constants/form-styles';
+import { layoutStyles } from '@/constants/layout-styles';
 import { useObjectives } from '@/hooks/use-objectives';
 import { useTheme } from '@/hooks/use-theme';
 import { useState } from 'react';
@@ -214,10 +215,10 @@ function confirmDeleteSubObjective(subObjectiveId: string, subObjectiveName: str
   }
   
   return (
-    <ThemedView style={styles.screen}>
-      <SafeAreaView style={styles.safeArea} edges={['bottom']}>
+    <ThemedView style={layoutStyles.flexFill}>
+    <SafeAreaView style={layoutStyles.flexFill} edges={['bottom']}>
         <KeyboardAvoidingView
-          style={styles.keyboardAvoidingView}
+        style={layoutStyles.flexFill}
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
           <ScrollView
@@ -261,6 +262,7 @@ function confirmDeleteSubObjective(subObjectiveId: string, subObjectiveName: str
                         onChangeText={setEditedSubObjectiveName}
                         accessibilityLabel="Modifier le nom du sous-objectif"
                         style={[
+                          layoutStyles.flexFill,
                           formStyles.inputBase,
                           styles.input,
                           {
@@ -303,6 +305,7 @@ function confirmDeleteSubObjective(subObjectiveId: string, subObjectiveName: str
                   {/* Nom du sous objectifs */}
                   <ThemedText
                     style={[
+                      layoutStyles.flexFill,
                       styles.subObjectiveName,
                       subObjective.completed && styles.completedText,
                     ]}
@@ -407,29 +410,20 @@ function confirmDeleteSubObjective(subObjectiveId: string, subObjectiveName: str
 }
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-  },
-  safeArea: {
-    flex: 1,
-  },
-  keyboardAvoidingView: {
-    flex: 1,
-  },
   content: {
     paddingHorizontal: Spacing.four,
     paddingTop: Spacing.five,
     paddingBottom: Spacing.six,
   },
   title: {
-    fontSize: 34,
+    fontSize: FontSizes.detailTitle,
     lineHeight: 42,
-    fontWeight: '700',
+    fontWeight: FontWeights.bold,
     textAlign: 'center',
   },
   dueDate: {
     marginTop: Spacing.two,
-    fontSize: 16,
+    fontSize: FontSizes.body,
     textAlign: 'center',
   },
   section: {
@@ -437,7 +431,7 @@ const styles = StyleSheet.create({
     gap: Spacing.two,
   },
   sectionTitle: {
-    fontSize: 24,
+    fontSize: FontSizes.sectionTitle,
     lineHeight: 32,
     marginBottom: Spacing.one,
   },
@@ -448,7 +442,6 @@ const styles = StyleSheet.create({
     marginTop: Spacing.two,
   },
   input: {
-    flex: 1,
     minHeight: 48,
     paddingHorizontal: Spacing.three,
   },
@@ -465,7 +458,7 @@ const styles = StyleSheet.create({
   subObjectiveIconButton: {
     width: 44,
     height: 44,
-    borderRadius: 8,
+    borderRadius: Radii.control,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -497,13 +490,12 @@ const styles = StyleSheet.create({
   },
   checkmark: {
     color: ActionColors.onAction,
-    fontSize: 18,
+    fontSize: FontSizes.largeBody,
     lineHeight: 21,
-    fontWeight: '700',
+    fontWeight: FontWeights.bold,
   },
   subObjectiveName: {
-    flex: 1,
-    fontSize: 16,
+    fontSize: FontSizes.body,
   },
   completedText: {
     textDecorationLine: 'line-through',

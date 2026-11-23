@@ -5,8 +5,9 @@ import { useObjectives } from '@/hooks/use-objectives';
 import { AppButton } from '@/components/AppButton';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { ActionColors, Spacing } from '@/constants/theme';
+import { ActionColors, FontSizes, Spacing } from '@/constants/theme';
 import { formStyles } from '@/constants/form-styles';
+import { layoutStyles } from '@/constants/layout-styles';
 import { useTheme } from '@/hooks/use-theme';
 import { useState,useEffect } from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -97,24 +98,30 @@ export default function EditObjectiveScreen() {
       }
 
   return (
-    <ThemedView style={styles.screen}>
-      <SafeAreaView style={styles.safeArea} edges={['bottom']}>
+    <ThemedView style={layoutStyles.flexFill}>
+      <SafeAreaView style={layoutStyles.flexFill} edges={['bottom']}>
         <ScrollView
           contentContainerStyle={styles.content}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
-          <ThemedText style={styles.title}>Modifier l’objectif</ThemedText>
+          <ThemedText style={[formStyles.formTitle, styles.title]}>Modifier l’objectif</ThemedText>
           <ThemedText style={[styles.subtitle, { color: theme.textSecondary }]}>
             Mets à jour les informations de ton objectif.
           </ThemedText>
           
           {/* Nom  */}
-          <ThemedText style={styles.label}>Nom de l’objectif</ThemedText>
+          <ThemedText style={formStyles.formLabel}>Nom de l’objectif</ThemedText>
           <TextInput
            value={name}
            onChangeText={setName}
-            style={[formStyles.inputBase, styles.input, fieldStyle, { color: theme.text }]}
+            style={[
+              formStyles.inputBase,
+              formStyles.objectiveInput,
+              styles.input,
+              fieldStyle,
+              { color: theme.text },
+            ]}
             placeholder={objective.name}
             placeholderTextColor={theme.textSecondary}
             accessibilityLabel="Nom de l’objectif"
@@ -122,7 +129,7 @@ export default function EditObjectiveScreen() {
             
           />
 
-          <ThemedText style={styles.label}>Date d’échéance</ThemedText>
+          <ThemedText style={formStyles.formLabel}>Date d’échéance</ThemedText>
           <Pressable onPress={() => setShowDatePicker(true)}
                 accessibilityRole="button"
                 accessibilityLabel="Choisir la date d'échéance">
@@ -177,34 +184,19 @@ export default function EditObjectiveScreen() {
 }
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-  },
-  safeArea: {
-    flex: 1,
-  },
   content: {
     flexGrow: 1,
     padding: Spacing.four,
   },
   title: {
-    fontSize: 28,
-    fontWeight: '700',
     marginBottom: Spacing.two,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: FontSizes.body,
     marginBottom: Spacing.five,
   },
-  label: {
-    fontSize: 16,
-    fontWeight: '600',
-    marginBottom: Spacing.two,
-  },
   input: {
-    minHeight: 52,
     paddingHorizontal: Spacing.three,
-    marginBottom: Spacing.four,
   },
   dateField: {
     paddingHorizontal: Spacing.three,

@@ -2,7 +2,7 @@ import { StyleSheet } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { ActionColors } from '@/constants/theme';
+import { ActionColors, Colors, Radii } from '@/constants/theme';
 type ProgressBarProps = {
   progress: number;
   label?: string;
@@ -34,13 +34,13 @@ const styles = StyleSheet.create({
   },
   track: {
     height: 10,
-    backgroundColor: '#E0E1E6',
-    borderRadius: 5,
+    backgroundColor: Colors.light.backgroundSelected,
+    borderRadius: Radii.progress,
     overflow: 'hidden',
   },
   fill: {
     height: '100%',
     backgroundColor: ActionColors.primary,
-    borderRadius: 5,
+    borderRadius: Radii.progress,
   },
 });

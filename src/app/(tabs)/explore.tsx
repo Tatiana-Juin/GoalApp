@@ -6,6 +6,7 @@ import ObjectiveCard from '@/components/ObjectiveCard';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { layoutStyles } from '@/constants/layout-styles';
 import { useObjectives } from '@/hooks/use-objectives';
 import { isObjectiveCompleted } from '@/utils/progress';
 
@@ -15,14 +16,16 @@ export default function CompletedObjectivesScreen() {
   const completedObjectives = objectives.filter(isObjectiveCompleted);
 
   return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
+    <ThemedView style={layoutStyles.flexFill}>
+      <SafeAreaView
+        style={[layoutStyles.flexFill, layoutStyles.centeredItems, styles.safeArea]}
+      >
         <ScrollView
-          style={styles.scroll}
-          contentContainerStyle={styles.content}
+          style={[layoutStyles.flexFill, styles.scroll]}
+          contentContainerStyle={[layoutStyles.listContentBase, styles.content]}
           showsVerticalScrollIndicator
         >
-          <ThemedText type="subtitle" style={styles.title}>
+          <ThemedText type="subtitle" style={layoutStyles.centeredText}>
             Objectifs terminés
           </ThemedText>
           {loading ? (
@@ -49,29 +52,18 @@ export default function CompletedObjectivesScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   safeArea: {
-    flex: 1,
-    alignItems: 'center',
     maxWidth: MaxContentWidth,
     alignSelf: 'center',
     width: '100%',
   },
   scroll: {
-    flex: 1,
     alignSelf: 'stretch',
   },
   content: {
     flexGrow: 1,
-    gap: Spacing.three,
     paddingHorizontal: Spacing.four,
     paddingVertical: Spacing.four,
     paddingBottom: BottomTabInset + Spacing.three,
-    alignItems: 'stretch',
-  },
-  title: {
-    textAlign: 'center',
   },
 });

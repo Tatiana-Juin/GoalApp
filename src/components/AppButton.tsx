@@ -5,7 +5,7 @@ import {
   type StyleProp,
   type ViewStyle,
 } from 'react-native';
-import { ActionColors } from '@/constants/theme';
+import { ActionColors, FontWeights, Radii } from '@/constants/theme';
 
 type AppButtonProps = {
   title: string;
@@ -37,7 +37,7 @@ export function AppButton({
 const styles = StyleSheet.create({
   button: {
     padding: 12,
-    borderRadius: 8,
+    borderRadius: Radii.control,
     alignItems: 'center',
   },
   primary: {
@@ -51,6 +51,6 @@ const styles = StyleSheet.create({
   },
   text: {
     color: ActionColors.onAction,
-    fontWeight: 'bold',
+    fontWeight: FontWeights.bold,
   },
 });

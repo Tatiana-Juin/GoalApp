@@ -7,6 +7,7 @@ import ObjectiveCard from '@/components/ObjectiveCard';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { layoutStyles } from '@/constants/layout-styles';
 import { useObjectives } from '@/hooks/use-objectives';
 import { isObjectiveCompleted } from '@/utils/progress';
 import { useRouter } from 'expo-router';
@@ -39,22 +40,24 @@ export default function HomeScreen() {
     (objective) => !isObjectiveCompleted(objective)
   );
   return (
-    <ThemedView style={styles.container}>
+    <ThemedView style={[layoutStyles.flexFill, styles.container]}>
       {/* garde le contenu dans la zone visible */}
-      <SafeAreaView style={styles.safeArea}>
+      <SafeAreaView
+        style={[layoutStyles.flexFill, layoutStyles.centeredItems, styles.safeArea]}
+      >
         {/* choisi automatiquement le style en fonction de la couleur de fond  */}
         <ThemedView style={styles.heroSection}>
           {/* texte s'adapte a la couleur de fond */}
-          <ThemedText type="title" style={styles.title}>
+          <ThemedText type="title" style={layoutStyles.centeredText}>
             Objectifs en cours
           </ThemedText>
         </ThemedView>
         
         {/* POUR TOUT LES OBJECTIFS */}
         <ScrollView
-          style={styles.objectivesScroll}
+          style={[layoutStyles.flexFill, styles.objectivesScroll]}
           // regle le contenu qu'il defile dans le scrollview
-          contentContainerStyle={styles.stepContainer}
+          contentContainerStyle={[layoutStyles.listContentBase, styles.stepContainer]}
           showsVerticalScrollIndicator
         >
           {loading ? (
@@ -94,19 +97,16 @@ export default function HomeScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     justifyContent: 'center',
     flexDirection: 'row',
   },
   safeArea: {
-    flex: 1,
     paddingHorizontal: Spacing.four,
     alignItems: 'center',
     gap: Spacing.three,
     maxWidth: MaxContentWidth,
   },
   objectivesScroll: {
-    flex: 1,
     alignSelf: 'stretch',
   },
   floatingButton: {
@@ -128,18 +128,13 @@ const styles = StyleSheet.create({
   paddingTop: Spacing.three,
   paddingHorizontal: Spacing.four,
 },
-  title: {
-    textAlign: 'center',
-  },
   code: {
     textTransform: 'uppercase',
   },
   stepContainer: {
-    gap: Spacing.three,
     paddingHorizontal: Spacing.three,
     paddingVertical: Spacing.four,
     paddingBottom: BottomTabInset + Spacing.three,
-    alignItems: 'stretch',
   },
 
 });
