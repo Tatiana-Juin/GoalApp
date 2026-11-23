@@ -5,7 +5,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { AppButton } from '@/components/AppButton';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Spacing } from '@/constants/theme';
+import { ActionColors, Spacing } from '@/constants/theme';
+import { formStyles } from '@/constants/form-styles';
 import { useObjectives } from '@/hooks/use-objectives';
 import { useTheme } from '@/hooks/use-theme';
 import { useState } from 'react';
@@ -31,7 +32,7 @@ export default function ObjectiveDetailScreen() {
 
   if (loading) {
     return (
-      <ThemedView style={styles.notFound}>
+      <ThemedView style={formStyles.notFound}>
         <ThemedText>Chargement de l’objectif...</ThemedText>
       </ThemedView>
     );
@@ -39,7 +40,7 @@ export default function ObjectiveDetailScreen() {
 
   if (!objective) {
     return (
-      <ThemedView style={styles.notFound}>
+      <ThemedView style={formStyles.notFound}>
         <ThemedText>Objectif introuvable</ThemedText>
       </ThemedView>
     );
@@ -212,7 +213,6 @@ function confirmDeleteSubObjective(subObjectiveId: string, subObjectiveName: str
     }
   }
   
-
   return (
     <ThemedView style={styles.screen}>
       <SafeAreaView style={styles.safeArea} edges={['bottom']}>
@@ -261,6 +261,7 @@ function confirmDeleteSubObjective(subObjectiveId: string, subObjectiveName: str
                         onChangeText={setEditedSubObjectiveName}
                         accessibilityLabel="Modifier le nom du sous-objectif"
                         style={[
+                          formStyles.inputBase,
                           styles.input,
                           {
                             color: theme.text,
@@ -273,13 +274,13 @@ function confirmDeleteSubObjective(subObjectiveId: string, subObjectiveName: str
                         title="modifier"
                         variant="danger"
                         onPress={() => void handleUpdateSubObjective()}
-                        style={styles.actionButton}
+                        style={formStyles.actionButton}
                       />
                       <AppButton
                         title="annuler"
                         variant="secondary"
                         onPress={() => setEditingSubObjectiveId(null)}
-                        style={styles.actionButton}
+                        style={formStyles.actionButton}
                       />
                     </>
                     
@@ -321,7 +322,7 @@ function confirmDeleteSubObjective(subObjectiveId: string, subObjectiveName: str
                     <SymbolView
                       name={{ ios: 'pencil', android: 'edit', web: 'edit' }}
                       size={20}
-                      tintColor="#FFFFFF"
+                      tintColor={ActionColors.onAction}
                     />
                   </Pressable>
                   {/* Bouton supprimer sous objectifs  */}
@@ -334,7 +335,7 @@ function confirmDeleteSubObjective(subObjectiveId: string, subObjectiveName: str
                     <SymbolView
                       name={{ ios: 'trash', android: 'delete', web: 'delete' }}
                       size={20}
-                      tintColor="#FFFFFF"
+                      tintColor={ActionColors.onAction}
                     />
                   </Pressable>
                   </>
@@ -354,6 +355,7 @@ function confirmDeleteSubObjective(subObjectiveId: string, subObjectiveName: str
                 }}
                 accessibilityLabel="Nom du nouveau sous-objectif"
                 style={[
+                  formStyles.inputBase,
                   styles.input,
                   {
                     color: theme.text,
@@ -369,10 +371,10 @@ function confirmDeleteSubObjective(subObjectiveId: string, subObjectiveName: str
               />
             </View>
             {nameError !== '' && (
-              <ThemedText style={styles.errorText}>{nameError}</ThemedText>
+              <ThemedText style={formStyles.errorText}>{nameError}</ThemedText>
             )}
             {saveError !== '' && (
-              <ThemedText style={styles.errorText}>{saveError}</ThemedText>
+              <ThemedText style={formStyles.errorText}>{saveError}</ThemedText>
             )}
           </ThemedView>
 
@@ -387,14 +389,14 @@ function confirmDeleteSubObjective(subObjectiveId: string, subObjectiveName: str
                   params:{objectiveId:objective.id}
                 })
               }
-              style={styles.actionButton}
+              style={formStyles.actionButton}
             />
             {/* SUPPRIMER OBJECTIVE */}
             <AppButton
               title="Supprimer l'objectif"
               variant="danger"
               onPress={() => confirmationDelete(objective.id)}
-              style={styles.actionButton}
+              style={formStyles.actionButton}
             />
           </ThemedView>
           </ScrollView>
@@ -418,12 +420,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.four,
     paddingTop: Spacing.five,
     paddingBottom: Spacing.six,
-  },
-  notFound: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: Spacing.four,
   },
   title: {
     fontSize: 34,
@@ -454,10 +450,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     minHeight: 48,
-    borderWidth: 1,
-    borderRadius: 8,
     paddingHorizontal: Spacing.three,
-    fontSize: 16,
   },
   addButton: {
     width: 48,
@@ -469,10 +462,6 @@ const styles = StyleSheet.create({
     marginTop: Spacing.five,
     gap: Spacing.three,
   },
-  actionButton: {
-    minHeight: 48,
-    justifyContent: 'center',
-  },
   subObjectiveIconButton: {
     width: 44,
     height: 44,
@@ -481,10 +470,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   editSubObjectiveButton: {
-    backgroundColor: '#64748B',
+    backgroundColor: ActionColors.secondary,
   },
   deleteSubObjectiveButton: {
-    backgroundColor: '#DC2626',
+    backgroundColor: ActionColors.danger,
   },
   subObjectiveRow: {
     minHeight: 58,
@@ -498,16 +487,16 @@ const styles = StyleSheet.create({
     width: 26,
     height: 26,
     borderWidth: 2,
-    borderColor: '#75609C',
+    borderColor: ActionColors.primary,
     borderRadius: 7,
     alignItems: 'center',
     justifyContent: 'center',
   },
   checkboxCompleted: {
-    backgroundColor: '#75609C',
+    backgroundColor: ActionColors.primary,
   },
   checkmark: {
-    color: '#FFFFFF',
+    color: ActionColors.onAction,
     fontSize: 18,
     lineHeight: 21,
     fontWeight: '700',
@@ -520,8 +509,4 @@ const styles = StyleSheet.create({
     textDecorationLine: 'line-through',
     opacity: 0.65,
   },
-  errorText: {
-        color: '#DC2626',
-        marginBottom: 16,
-    },
 });

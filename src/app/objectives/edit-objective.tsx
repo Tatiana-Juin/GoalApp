@@ -5,7 +5,8 @@ import { useObjectives } from '@/hooks/use-objectives';
 import { AppButton } from '@/components/AppButton';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { Spacing } from '@/constants/theme';
+import { ActionColors, Spacing } from '@/constants/theme';
+import { formStyles } from '@/constants/form-styles';
 import { useTheme } from '@/hooks/use-theme';
 import { useState,useEffect } from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -45,7 +46,7 @@ export default function EditObjectiveScreen() {
     // verifie que ca charge si c'est le cas on dit que ca charge 
      if (loading) {
         return (
-          <ThemedView style={styles.notFound}>
+          <ThemedView style={formStyles.notFound}>
             <ThemedText>Chargement de l’objectif...</ThemedText>
           </ThemedView>
         );
@@ -53,7 +54,7 @@ export default function EditObjectiveScreen() {
       // sinon objective introuvable
       if (!objective) {
         return (
-          <ThemedView style={styles.notFound}>
+          <ThemedView style={formStyles.notFound}>
             <ThemedText>Objectif introuvable</ThemedText>
           </ThemedView>
         );
@@ -113,7 +114,7 @@ export default function EditObjectiveScreen() {
           <TextInput
            value={name}
            onChangeText={setName}
-            style={[styles.input, fieldStyle, { color: theme.text }]}
+            style={[formStyles.inputBase, styles.input, fieldStyle, { color: theme.text }]}
             placeholder={objective.name}
             placeholderTextColor={theme.textSecondary}
             accessibilityLabel="Nom de l’objectif"
@@ -128,6 +129,7 @@ export default function EditObjectiveScreen() {
             <View
             style={[
               styles.dateField,
+              formStyles.dateFieldBase,
               fieldStyle,
             ]}
             accessibilityLabel="Date d’échéance"
@@ -135,7 +137,7 @@ export default function EditObjectiveScreen() {
             <ThemedText style={{ color: theme.textSecondary }}>
               {(deadline ??objective.dueDate).toLocaleDateString('fr-FR')}
             </ThemedText>
-            <ThemedText style={styles.dateAction}>Calendrier</ThemedText>
+            <ThemedText style={[formStyles.dateAction, styles.dateAction]}>Calendrier</ThemedText>
           </View>
           </Pressable>
           {/* c'est pour pouvoir cliquer sur le calendrier */}
@@ -159,13 +161,13 @@ export default function EditObjectiveScreen() {
             <AppButton
               title="Enregistrer les modifications"
               onPress={() => handleUpdatedObjective()}
-              style={styles.actionButton}
+              style={formStyles.actionButton}
             />
             <AppButton
               title="Annuler"
               variant="secondary"
               onPress={() => router.back()}
-              style={styles.actionButton}
+              style={formStyles.actionButton}
             />
           </View>
         </ScrollView>
@@ -201,40 +203,19 @@ const styles = StyleSheet.create({
   },
   input: {
     minHeight: 52,
-    borderWidth: 1,
-    borderRadius: 8,
     paddingHorizontal: Spacing.three,
-    fontSize: 16,
     marginBottom: Spacing.four,
   },
   dateField: {
-    minHeight: 52,
-    borderWidth: 1,
-    borderRadius: 8,
     paddingHorizontal: Spacing.three,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
     gap: Spacing.two,
     marginBottom: Spacing.five,
   },
   dateAction: {
-    color: '#75609C',
-    fontSize: 14,
-    fontWeight: '600',
+    color: ActionColors.primary,
   },
   actions: {
     gap: Spacing.three,
     marginTop: Spacing.two,
-  },
-  actionButton: {
-    minHeight: 48,
-    justifyContent: 'center',
-  },
-   notFound: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: Spacing.four,
   },
 });

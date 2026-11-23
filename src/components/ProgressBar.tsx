@@ -2,6 +2,7 @@ import { StyleSheet } from 'react-native';
 
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
+import { ActionColors } from '@/constants/theme';
 type ProgressBarProps = {
   progress: number;
   label?: string;
@@ -39,7 +40,7 @@ const styles = StyleSheet.create({
   },
   fill: {
     height: '100%',
-    backgroundColor: '#75609C',
+    backgroundColor: ActionColors.primary,
     borderRadius: 5,
   },
 });

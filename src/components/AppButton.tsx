@@ -5,6 +5,7 @@ import {
   type StyleProp,
   type ViewStyle,
 } from 'react-native';
+import { ActionColors } from '@/constants/theme';
 
 type AppButtonProps = {
   title: string;
@@ -40,16 +41,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   primary: {
-    backgroundColor: '#75609C',
+    backgroundColor: ActionColors.primary,
   },
   secondary: {
-    backgroundColor: '#64748B',
+    backgroundColor: ActionColors.secondary,
   },
   danger: {
-    backgroundColor: '#DC2626',
+    backgroundColor: ActionColors.danger,
   },
   text: {
-    color: 'white',
+    color: ActionColors.onAction,
     fontWeight: 'bold',
   },
 });

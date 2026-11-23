@@ -3,6 +3,8 @@ import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { useObjectives } from '@/hooks/use-objectives';
 import { useTheme } from '@/hooks/use-theme';
+import { Spacing } from '@/constants/theme';
+import { formStyles } from '@/constants/form-styles';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
@@ -73,7 +75,7 @@ export default function NewObjectiveScreen() {
             {/* NOM DE L'OBJECTIF */}
             <ThemedText style={styles.label}>Nom de l'objectif</ThemedText>
             <TextInput
-                style={[styles.input, fieldStyle, { color: theme.text }]}
+                style={[formStyles.inputBase, styles.input, fieldStyle, { color: theme.text }]}
                 value={name}
                 placeholder="Ex. : apprendre React"
                 placeholderTextColor={theme.textSecondary}
@@ -85,12 +87,12 @@ export default function NewObjectiveScreen() {
             />
             {/* s'il existe une erreur  */}
             {nameError !== '' && (
-                <ThemedText style={styles.errorText}>{nameError}</ThemedText>
+                <ThemedText style={formStyles.errorText}>{nameError}</ThemedText>
             )}
             {/* DATE D'ECHEANCE  */}
             <ThemedText style={styles.label}>Date d'échéance </ThemedText>
             <Pressable
-                style={[styles.dateField, fieldStyle]}
+                style={[formStyles.dateFieldBase, styles.dateField, fieldStyle]}
                 onPress={() => setShowDatePicker(true)}
                 accessibilityRole="button"
                 accessibilityLabel="Choisir la date d'échéance"
@@ -103,7 +105,7 @@ export default function NewObjectiveScreen() {
                 >
                     {deadline ? deadline.toLocaleDateString('fr-FR') : 'Choisir une date'}
                 </ThemedText>
-                <ThemedText style={styles.dateAction}>Ouvrir le calendrier</ThemedText>
+                <ThemedText style={formStyles.dateAction}>Ouvrir le calendrier</ThemedText>
             </Pressable>
 
             {showDatePicker && (
@@ -121,7 +123,7 @@ export default function NewObjectiveScreen() {
                 />
             )}
             {dateError !== '' && (
-                <ThemedText style={styles.errorText}>{dateError}</ThemedText>
+                <ThemedText style={formStyles.errorText}>{dateError}</ThemedText>
             )}
 
             <AppButton 
@@ -129,10 +131,10 @@ export default function NewObjectiveScreen() {
                 variant="primary"
                 accessibilityLabel="Créer l'objectif"
                 onPress={() => void handleCreateObjective()}
-                style={styles.addButton}
+                style={formStyles.actionButton}
             />
             {saveError !== '' && (
-                <ThemedText style={styles.errorText}>{saveError}</ThemedText>
+                <ThemedText style={formStyles.errorText}>{saveError}</ThemedText>
             )}
 
         </ThemedView>
@@ -142,67 +144,46 @@ export default function NewObjectiveScreen() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 24,
+        padding: Spacing.four,
     },
     title: {
         fontSize: 28,
         fontWeight: '700',
-        marginBottom: 24,
+        marginBottom: Spacing.four,
     },
     label: {
         fontWeight: '600',
-        marginBottom: 8,
+        marginBottom: Spacing.two,
     },
     input: {
         minHeight: 52,
-        borderWidth: 1,
-        borderRadius: 8,
         paddingHorizontal: 14,
-        fontSize: 16,
-        marginBottom: 24,
+        marginBottom: Spacing.four,
     },
     dateField: {
-        minHeight: 52,
-        borderWidth: 1,
-        borderRadius: 8,
         paddingHorizontal: 14,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
         gap: 12,
-        marginBottom: 24,
+        marginBottom: Spacing.four,
     },
     dateText: {
         fontSize: 16,
         flexShrink: 1,
     },
-    dateAction: {
-        fontSize: 14,
-        fontWeight: '600',
-    },
-    errorText: {
-        color: '#DC2626',
-        marginBottom: 16,
-    },
-    categoryList: {
-        flexDirection: 'row',
-        flexWrap: 'wrap',
-        gap: 8,
-        paddingBottom: 24,
-    },
-    categoryButton: {
-        minHeight: 36,
-        borderWidth: 1,
-        borderRadius: 18,
-        paddingHorizontal: 12,
-        justifyContent: 'center',
-    },
-    categoryText: {
-        fontSize: 14,
-        fontWeight: '600',
-    },
-     addButton: {
-     minHeight: 48,
-    justifyContent: 'center',
-  },
+    // categoryList: {
+    //     flexDirection: 'row',
+    //     flexWrap: 'wrap',
+    //     gap: Spacing.two,
+    //     paddingBottom: Spacing.four,
+    // },
+    // categoryButton: {
+    //     minHeight: 36,
+    //     borderWidth: 1,
+    //     borderRadius: 18,
+    //     paddingHorizontal: 12,
+    //     justifyContent: 'center',
+    // },
+    // categoryText: {
+    //     fontSize: 14,
+    //     fontWeight: '600',
+    // },
 });
