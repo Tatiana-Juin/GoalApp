@@ -1,4 +1,5 @@
 import { AppButton } from '@/components/AppButton';
+import { ObjectiveStorageError } from '@/components/ObjectiveStorageError';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { useObjectives } from '@/hooks/use-objectives';
@@ -14,7 +15,7 @@ import { Pressable, StyleSheet, TextInput } from 'react-native';
 export default function NewObjectiveScreen() {
     const theme = useTheme();
     const router = useRouter();
-    const { ajouterObjectif, loading } = useObjectives();
+    const { ajouterObjectif, loading, loadError, retryLoading } = useObjectives();
     const [name, setName] = useState<string>('');
     const [deadline, setDeadline] = useState<Date | null>(null);
     const [showDatePicker, setShowDatePicker] = useState(false);
@@ -39,7 +40,7 @@ export default function NewObjectiveScreen() {
             return;
         }
 
-        if (loading || saving) return;
+        if (loading || loadError || saving) return;
 
         setSaving(true);
         try {
@@ -69,12 +70,24 @@ export default function NewObjectiveScreen() {
         borderColor: theme.textSecondary,
     };
 
+    if (loading) {
+        return (
+            <ThemedView style={formStyles.notFound}>
+                <ThemedText>Chargement des objectifs...</ThemedText>
+            </ThemedView>
+        );
+    }
+
+    if (loadError) {
+        return <ObjectiveStorageError onRetry={retryLoading} />;
+    }
+
     return (
         <ThemedView style={[layoutStyles.flexFill, styles.container]}>
             {/* nom de la page  */}
             <ThemedText style={[formStyles.formTitle, styles.title]}>Nouvel objectif</ThemedText>
             {/* NOM DE L'OBJECTIF */}
-            <ThemedText style={formStyles.formLabel}>Nom de l'objectif</ThemedText>
+            <ThemedText style={formStyles.formLabel}>Nom de l&apos;objectif</ThemedText>
             <TextInput
                 style={[
                     formStyles.inputBase,
@@ -97,7 +110,7 @@ export default function NewObjectiveScreen() {
                 <ThemedText style={formStyles.errorText}>{nameError}</ThemedText>
             )}
             {/* DATE D'ECHEANCE  */}
-            <ThemedText style={formStyles.formLabel}>Date d'échéance </ThemedText>
+            <ThemedText style={formStyles.formLabel}>Date d&apos;échéance </ThemedText>
             <Pressable
                 style={[formStyles.dateFieldBase, styles.dateField, fieldStyle]}
                 onPress={() => setShowDatePicker(true)}

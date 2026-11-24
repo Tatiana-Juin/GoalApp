@@ -1,9 +1,9 @@
-import * as Device from 'expo-device';
-import { Platform, ScrollView, StyleSheet } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AppButton } from '@/components/AppButton';
 import ObjectiveCard from '@/components/ObjectiveCard';
+import { ObjectiveStorageError } from '@/components/ObjectiveStorageError';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
@@ -12,30 +12,11 @@ import { useObjectives } from '@/hooks/use-objectives';
 import { isObjectiveCompleted } from '@/utils/progress';
 import { useRouter } from 'expo-router';
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
-  return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
-
 export default function HomeScreen() {
   // ROUTEUR 
   const router = useRouter();
   // lit les objectifs 
-  const { objectives, loading } = useObjectives();
+  const { objectives, loading, loadError, retryLoading } = useObjectives();
   const activeObjectives = objectives.filter(
     (objective) => !isObjectiveCompleted(objective)
   );
@@ -63,6 +44,8 @@ export default function HomeScreen() {
           {loading ? (
             // au moment du chargement 
             <ThemedText>Chargement des objectifs...</ThemedText>
+          ) : loadError ? (
+            <ObjectiveStorageError onRetry={retryLoading} />
           ) : objectives.length === 0 ? (
             <ThemedText themeColor="textSecondary">
               Aucun objectif pour le moment.
@@ -83,13 +66,15 @@ export default function HomeScreen() {
             />
           )}
         </ScrollView>
-        <AppButton
-          title="+"
-          variant="primary"
-          accessibilityLabel="Ajouter un objectif"
-          style={styles.floatingButton}
-          onPress={() => router.push('/objectives/new-objective')}
-        />
+        {!loading && !loadError && (
+          <AppButton
+            title="+"
+            variant="primary"
+            accessibilityLabel="Ajouter un objectif"
+            style={styles.floatingButton}
+            onPress={() => router.push('/objectives/new-objective')}
+          />
+        )}
       </SafeAreaView>
     </ThemedView>
   );

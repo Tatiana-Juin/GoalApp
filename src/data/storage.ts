@@ -14,19 +14,14 @@ export function creerIdUnique<T extends { id: string }>(elements: T[]): string {
 }
 // FONCTION POUR CHARGER LES DONNER 
 export async function chargerObjectifs(): Promise<Objective[]> {
-	try {
-		const donnees = await AsyncStorage.getItem(OBJECTIVES_KEY);
-		if (!donnees) return [];
+	const donnees = await AsyncStorage.getItem(OBJECTIVES_KEY);
+	if (!donnees) return [];
 
-		const objectifs: Objective[] = JSON.parse(donnees);
-		return objectifs.map((objectif) => ({
-			...objectif,
-			dueDate: new Date(objectif.dueDate),
-		}));
-	} catch (error) {
-		console.error('Impossible de charger les objectifs', error);
-		return [];
-	}
+	const objectifs: Objective[] = JSON.parse(donnees);
+	return objectifs.map((objectif) => ({
+		...objectif,
+		dueDate: new Date(objectif.dueDate),
+	}));
 }
 // FONCTION POUR AJOUTER DES OBJECTIFS 
 export async function sauvegarder(objectifs: Objective[]): Promise<boolean> {

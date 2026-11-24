@@ -3,13 +3,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useLocalSearchParams,useRouter } from 'expo-router';
 import { useObjectives } from '@/hooks/use-objectives';
 import { AppButton } from '@/components/AppButton';
+import { ObjectiveStorageError } from '@/components/ObjectiveStorageError';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { ActionColors, FontSizes, Spacing } from '@/constants/theme';
 import { formStyles } from '@/constants/form-styles';
 import { layoutStyles } from '@/constants/layout-styles';
 import { useTheme } from '@/hooks/use-theme';
-import { useState,useEffect } from 'react';
+import { useState } from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 
@@ -22,28 +23,22 @@ export default function EditObjectiveScreen() {
     borderColor: theme.textSecondary,
   };
     const { objectiveId } = useLocalSearchParams<{ objectiveId: string }>();
-    const { objectives, loading,updatedObjective } = useObjectives();
+    const { objectives, loading, loadError, retryLoading, updatedObjective } = useObjectives();
     const objective = objectives.find((item) => item.id === objectiveId);
+    const [editedName, setEditedName] = useState<{ objectiveId: string; value: string } | null>(null);
+    const name = objective && editedName?.objectiveId === objective.id
+      ? editedName.value
+      : objective?.name ?? '';
 
     // POUR LA DATE 
     // pour savoir si c'est ouvert
     const [showDatePicker, setShowDatePicker] = useState(false);
     // pour recuperer la date 
      const [deadline, setDeadline] = useState<Date | null>(null);
-      const [dateError, setDateError] = useState('');
-      const [name,setName] =  useState("");
       const [nameError,setNameError]= useState("");
        const [saving, setSaving] = useState(false);
        const [saveError, setSaveError] = useState('');
      
-
-      // Au chargement pour recuperer le nom et le placer dans le useState
-      useEffect(()=>{
-        if(objective){
-          setName(objective.name)
-        }
-      },[objective])
-
     // verifie que ca charge si c'est le cas on dit que ca charge 
      if (loading) {
         return (
@@ -51,6 +46,9 @@ export default function EditObjectiveScreen() {
             <ThemedText>Chargement de l’objectif...</ThemedText>
           </ThemedView>
         );
+      }
+      if (loadError) {
+        return <ObjectiveStorageError onRetry={retryLoading} />;
       }
       // sinon objective introuvable
       if (!objective) {
@@ -66,7 +64,6 @@ export default function EditObjectiveScreen() {
         if (!objective) return;
         const nameObjective = name.trim();
         setNameError("");
-        setDateError("");
         setSaveError("");
 
         if(!nameObjective){
@@ -114,7 +111,10 @@ export default function EditObjectiveScreen() {
           <ThemedText style={formStyles.formLabel}>Nom de l’objectif</ThemedText>
           <TextInput
            value={name}
-           onChangeText={setName}
+           onChangeText={(value) => {
+             setEditedName({ objectiveId: objective.id, value });
+             setNameError('');
+           }}
             style={[
               formStyles.inputBase,
               formStyles.objectiveInput,
@@ -128,6 +128,9 @@ export default function EditObjectiveScreen() {
            
             
           />
+          {nameError !== '' && (
+            <ThemedText style={formStyles.errorText}>{nameError}</ThemedText>
+          )}
 
           <ThemedText style={formStyles.formLabel}>Date d’échéance</ThemedText>
           <Pressable onPress={() => setShowDatePicker(true)}
@@ -155,7 +158,6 @@ export default function EditObjectiveScreen() {
                     onValueChange={(_event, selectedDate) => {
                         if (selectedDate) {
                             setDeadline(selectedDate);
-                            setDateError('');
                         }
                         setShowDatePicker(false);
                     }}
@@ -177,6 +179,9 @@ export default function EditObjectiveScreen() {
               style={formStyles.actionButton}
             />
           </View>
+          {saveError !== '' && (
+            <ThemedText style={formStyles.errorText}>{saveError}</ThemedText>
+          )}
         </ScrollView>
       </SafeAreaView>
     </ThemedView>

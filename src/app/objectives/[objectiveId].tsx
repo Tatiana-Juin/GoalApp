@@ -3,6 +3,7 @@ import { KeyboardAvoidingView, Pressable, ScrollView, StyleSheet, TextInput, Vie
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AppButton } from '@/components/AppButton';
+import { ObjectiveStorageError } from '@/components/ObjectiveStorageError';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { ActionColors, FontSizes, FontWeights, Radii, Spacing } from '@/constants/theme';
@@ -17,7 +18,17 @@ import { SymbolView } from 'expo-symbols';
 
 export default function ObjectiveDetailScreen() {
   const { objectiveId } = useLocalSearchParams<{ objectiveId: string }>();
-  const { objectives, loading,deleteObjective,addSubObjective,subObjectiveValide,updatedSubObjective,deleteSubObjective } = useObjectives();
+  const {
+    objectives,
+    loading,
+    loadError,
+    retryLoading,
+    deleteObjective,
+    addSubObjective,
+    subObjectiveValide,
+    updatedSubObjective,
+    deleteSubObjective,
+  } = useObjectives();
   const objective = objectives.find((item) => item.id === objectiveId);
   const theme = useTheme();
    const router = useRouter();
@@ -37,6 +48,10 @@ export default function ObjectiveDetailScreen() {
         <ThemedText>Chargement de l’objectif...</ThemedText>
       </ThemedView>
     );
+  }
+
+  if (loadError) {
+    return <ObjectiveStorageError onRetry={retryLoading} />;
   }
 
   if (!objective) {

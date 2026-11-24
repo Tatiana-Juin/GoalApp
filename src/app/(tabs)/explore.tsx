@@ -3,6 +3,7 @@ import { ScrollView, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import ObjectiveCard from '@/components/ObjectiveCard';
+import { ObjectiveStorageError } from '@/components/ObjectiveStorageError';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
@@ -12,7 +13,7 @@ import { isObjectiveCompleted } from '@/utils/progress';
 
 export default function CompletedObjectivesScreen() {
   const router = useRouter();
-  const { objectives, loading } = useObjectives();
+  const { objectives, loading, loadError, retryLoading } = useObjectives();
   const completedObjectives = objectives.filter(isObjectiveCompleted);
 
   return (
@@ -30,6 +31,8 @@ export default function CompletedObjectivesScreen() {
           </ThemedText>
           {loading ? (
             <ThemedText>Chargement des objectifs...</ThemedText>
+          ) : loadError ? (
+            <ObjectiveStorageError onRetry={retryLoading} />
           ) : completedObjectives.length === 0 ? (
             <ThemedText themeColor="textSecondary">
               Aucun objectif terminé pour le moment.

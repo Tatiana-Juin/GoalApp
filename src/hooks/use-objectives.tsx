@@ -18,6 +18,8 @@ type NewObjective = Omit<Objective, 'id' | 'completed'>;
 type ObjectivesContextValue = {
   objectives: Objective[];
   loading: boolean;
+  loadError: boolean;
+  retryLoading: () => void;
   ajouterObjectif: (objective: NewObjective) => Promise<boolean>;
   deleteObjective: (objectiveId: string) => Promise<boolean>;
   updatedObjective: (objectiveId: string, name: string, dueDate: Date) => Promise<boolean>;
@@ -33,25 +35,40 @@ const ObjectivesContext = createContext<ObjectivesContextValue | null>(null);
 export function ObjectivesProvider({ children }: PropsWithChildren) {
   const [objectives, setObjectives] = useState<Objective[]>([]);
   const [loading, setLoading] = useState(true);
-  // CHARGER OBJECTIFS AU DEMARRAGE 
+  const [loadError, setLoadError] = useState(false);
+  const [loadAttempt, setLoadAttempt] = useState(0);
+
   useEffect(() => {
     let active = true;
 
-    chargerObjectifs().then((savedObjectives) => {
-      if (active) {
-        setObjectives(savedObjectives);
-        setLoading(false);
-      }
-    });
+    chargerObjectifs()
+      .then((savedObjectives) => {
+        if (active) setObjectives(savedObjectives);
+      })
+      .catch((error: unknown) => {
+        if (active) {
+          console.error('Impossible de charger les objectifs', error);
+          setLoadError(true);
+        }
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
 
     return () => {
       active = false;
     };
-  }, []);
+  }, [loadAttempt]);
+
+  function retryLoading() {
+    setLoading(true);
+    setLoadError(false);
+    setLoadAttempt((attempt) => attempt + 1);
+  }
   
 //   AJOUT d'UN OBJECTIVE  
   async function ajouterObjectif(input: NewObjective): Promise<boolean> {
-    if (loading) return false;
+    if (loading || loadError) return false;
     // CREATION D UN OBJET BASER SUR UNE ONTERFACE
     const newObjective: Objective = {
       ...input,
@@ -68,6 +85,8 @@ export function ObjectivesProvider({ children }: PropsWithChildren) {
   }
   // FONCTION POUR SUPPRESSION
   async function deleteObjective(objectiveId: string): Promise<boolean> {
+    if (loading || loadError) return false;
+
     const updatedObjectives = objectives.filter(
       (objective) => objective.id !== objectiveId
     );
@@ -86,6 +105,8 @@ export function ObjectivesProvider({ children }: PropsWithChildren) {
   }
   // POUR MODIFIER UN OBJECTIF
   async function updatedObjective(objectiveId: string, name: string, dueDate: Date): Promise<boolean> {
+    if (loading || loadError) return false;
+
     const objectiveExists = objectives.some(
       (objective) => objective.id === objectiveId
     );
@@ -106,7 +127,7 @@ export function ObjectivesProvider({ children }: PropsWithChildren) {
   // POUR AJOUTER UN SOUS OBJECTIVE
   async function addSubObjective(objectiveId:string,name:string) {
     // verifie que ca a charger
-    if (loading) return false;
+    if (loading || loadError) return false;
     const parentObjective = objectives.find((item) => item.id === objectiveId);
     if (!parentObjective) return false;
 
@@ -136,7 +157,7 @@ export function ObjectivesProvider({ children }: PropsWithChildren) {
 
   async function subObjectiveValide(objectiveId:string,subObjectiveId:string): Promise<boolean> {
     // if(!objectives) return false;
-    if (loading) return false;
+    if (loading || loadError) return false;
     // retrouve l'objectifs parent 
     const parentObjective = objectives.find((item) => item.id === objectiveId);
     if (!parentObjective) return false;
@@ -172,6 +193,8 @@ export function ObjectivesProvider({ children }: PropsWithChildren) {
   }
 
   async function updatedSubObjective(objectiveId:string,subObjectiveId:string,nameSubObjective:string) : Promise<boolean>{
+    if (loading || loadError) return false;
+
     // retrouve l'objectifs parent 
     const parentObjective = objectives.find((item) => item.id === objectiveId);
     if (!parentObjective) return false;
@@ -207,7 +230,7 @@ export function ObjectivesProvider({ children }: PropsWithChildren) {
   }
 
   async function deleteSubObjective(objectiveId:string,subObjectiveId:string): Promise<boolean>{
-    if (loading) return false;
+    if (loading || loadError) return false;
     // retrouve l'objectifs parent 
     const parentObjective = objectives.find((item) => item.id === objectiveId);
     if (!parentObjective) return false;
@@ -238,7 +261,19 @@ export function ObjectivesProvider({ children }: PropsWithChildren) {
   return (
     // Dit ce qu'il fournis au composant
     <ObjectivesContext.Provider
-      value={{ objectives, loading, ajouterObjectif, deleteObjective, updatedObjective,addSubObjective,subObjectiveValide,updatedSubObjective,deleteSubObjective }}
+      value={{
+        objectives,
+        loading,
+        loadError,
+        retryLoading,
+        ajouterObjectif,
+        deleteObjective,
+        updatedObjective,
+        addSubObjective,
+        subObjectiveValide,
+        updatedSubObjective,
+        deleteSubObjective,
+      }}
     >
       {children}
     </ObjectivesContext.Provider>
