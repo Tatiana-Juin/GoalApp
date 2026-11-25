@@ -6,8 +6,6 @@ L'objectif est d'aider les utilisateurs à avancer progressivement dans leurs pr
 
 ## ✨ Fonctionnalités
 
-L'application permet actuellement de :
-
 ### Objectifs
 - **Ajouter** un nouvel objectif.
 - **Modifier** un objectif existant.
